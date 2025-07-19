@@ -85,6 +85,7 @@ To close the loop on the examination data, a **Power BI report** was connected t
 - **Component Logic:** Blazor (Razor Components)
 - **Backend Orchestration:** Microsoft Power Automate
 - **Data Gateway:** On-Premises Data Gateway
+- **Testing:** Azure DevOps Pipilines
 - **API:** Internal Corporate REST API
 - **Reporting:** Microsoft Power BI
 - **Design Pattern:** MVVM
@@ -94,9 +95,3 @@ To close the loop on the examination data, a **Power BI report** was connected t
 ## 🚀 Getting Started
 
 As stated in the disclaimer, this project is **for review purposes only and cannot be run**. The necessary configurations, such as Power Automate URLs and other sensitive endpoints, have been removed. The code is provided to demonstrate the structure, patterns, and technologies used in the original application.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
