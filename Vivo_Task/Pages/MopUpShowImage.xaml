@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Vivo_Task.Models"
+             xmlns:icon="clr-namespace:Vivo_Task.Models"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:converter="clr-namespace:Vivo_Task.Converters"
+             xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviorPages="clr-namespace:Vivo_Task.Animations"
+             x:DataType="local:Cards_data"
+             x:Class="Vivo_Task.Pages.MopUpShowImage"
+             Color="Transparent"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+
+    <!--<Frame CornerRadius="50" BackgroundColor="Transparent" WidthRequest="350" HeightRequest="700" Padding="0">
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto">
+            <Image Aspect="{OnPlatform Android=AspectFit,WinUI=AspectFit}"
+                     SemanticProperties.Description="Card" 
+                     Source="{Binding  contentBytes}"
+                   WidthRequest="350" HeightRequest="700">
+                <Image.Shadow>
+                    <Shadow Brush="Black" Offset="10,10" Opacity="0.1" />
+                </Image.Shadow>
+            </Image>
+            <Frame CornerRadius="25" HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                Grid.Column="0" WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" BorderColor="White"
+                Grid.Row="0">
+                <Frame.Clip>
+                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                </Frame.Clip>
+                <Button Text="{x:Static model:IconFontWeb.x}" Clicked="Button_Clicked" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent" FontFamily="Desktop" FontSize="15"
+                    TextColor="Red" >
+                    <Button.Behaviors>
+                        <toolkit:AnimationBehavior EventName="Pressed">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation 
+                                Easing="{x:Static Easing.Linear}"
+                                Length="250"
+                                Scale="1.1"/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+
+                        <toolkit:AnimationBehavior EventName="Released">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation 
+                                Easing="{x:Static Easing.Linear}"
+                                Length="250"
+                                Scale="1.0"/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+                    </Button.Behaviors>
+                </Button>
+            </Frame>
+            <Frame CornerRadius="25" HorizontalOptions="Start" VerticalOptions="Start" Margin="10"
+                Grid.Column="0" WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" BorderColor="Transparent"
+                Grid.Row="0">
+                <Frame.Clip>
+                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                </Frame.Clip>
+                <Button Text="{x:Static model:IconFontWeb.ShareNodes}" Clicked="ShareButton" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent" FontFamily="Desktop" FontSize="25"
+                    TextColor="MediumSlateBlue" >
+                    <Button.Behaviors>
+                        <toolkit:AnimationBehavior EventName="Pressed">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation 
+                    Easing="{x:Static Easing.Linear}"
+                    Length="250"
+                    Scale="1.1"/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+
+                        <toolkit:AnimationBehavior EventName="Released">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation 
+                    Easing="{x:Static Easing.Linear}"
+                    Length="250"
+                    Scale="1.0"/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+                    </Button.Behaviors>
+                </Button>
+            </Frame>
+        </Grid>
+    </Frame>-->
+    <Grid WidthRequest="350" HeightRequest="700">
+        <!-- Imagem principal com sombra -->
+        <Image Aspect="{OnPlatform Android=AspectFit,WinUI=AspectFit}"
+           SemanticProperties.Description="Card" 
+           Source="{Binding contentBytes}"
+           WidthRequest="350" HeightRequest="700">
+            <Image.Shadow>
+                <Shadow Brush="Black" Offset="10,10" Opacity="0.1" />
+            </Image.Shadow>
+        </Image>
+
+        <!-- Máscara para a borda arredondada -->
+        <!--<Border  WidthRequest="350" HeightRequest="700" Padding="0" BackgroundColor="Transparent">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="50" />
+            </Border.StrokeShape>
+        </Border>-->
+
+        <!-- Botão no canto superior direito -->
+        <Border  WidthRequest="50" HeightRequest="50" Stroke="#3949ab" StrokeThickness="2" 
+                 HorizontalOptions="End" VerticalOptions="Start"
+                 Padding="0" BackgroundColor="Transparent" Margin="10">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="50" />
+            </Border.StrokeShape>
+            <Button Text="{mi:FontAwesomeSolid Icon=X }" Background="Transparent" BorderColor="Transparent" 
+                    Clicked="Button_Clicked" WidthRequest="50" HeightRequest="50"
+                BackgroundColor="Transparent"  FontSize="15"
+                TextColor="White"  >
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Pressed">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <behaviorPages:SampleScaleToAnimation Easing="{x:Static Easing.Linear}" Length="250" Scale="1.1" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+
+                    <toolkit:AnimationBehavior EventName="Released">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <behaviorPages:SampleScaleToAnimation Easing="{x:Static Easing.Linear}" Length="250" Scale="1.0" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
+            </Button>
+        </Border>
+
+        <!-- Botão no canto superior esquerdo -->
+        <Border  WidthRequest="50" HeightRequest="50" Stroke="#3949ab" StrokeThickness="2" 
+         HorizontalOptions="Start" VerticalOptions="Start"
+         Padding="0" BackgroundColor="Transparent" Margin="10">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="50" />
+            </Border.StrokeShape>
+            <Grid RowDefinitions="*" ColumnDefinitions="*">
+                <Button Text="{mi:Fluent Icon=Share24}" Clicked="ShareButton" WidthRequest="60" HeightRequest="60"
+                        BackgroundColor="Transparent" FontSize="25"
+                        TextColor="White" >
+                    <Button.Behaviors>
+                        <toolkit:AnimationBehavior EventName="Pressed">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation Easing="{x:Static Easing.Linear}" Length="250" Scale="1.1" />
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+
+                        <toolkit:AnimationBehavior EventName="Released">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <behaviorPages:SampleScaleToAnimation Easing="{x:Static Easing.Linear}" Length="250" Scale="1.0" />
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+                    </Button.Behaviors>
+                </Button>
+            </Grid>
+
+        </Border>
+    </Grid>
+
+</mopups:Popup>

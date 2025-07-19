@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Vivo_Task.Models"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:tp="clr-namespace:Vivo_Task.Templates"
+             xmlns:icon="clr-namespace:Vivo_Task.Models"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:converter="clr-namespace:Vivo_Task.Converters"
+             x:Class="Vivo_Task.Pages.UpdateSenhaUser" 
+             x:DataType="vm:EdituserViewModel"
+             BackgroundColor="MediumSlateBlue"
+             Title="Editar"
+             Shell.FlyoutBehavior="Disabled"
+             NavigationPage.HasNavigationBar="False"
+             Shell.FlyoutItemIsVisible="False"
+             Shell.NavBarIsVisible="False">
+
+    <Grid HorizontalOptions="FillAndExpand" 
+          VerticalOptions="FillAndExpand"
+          RowDefinitions="50,*,120"
+          ColumnDefinitions="*">
+
+        <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center">
+            <Image Source="regionalne.png" WidthRequest="30" >
+            </Image>
+            <Label Text="Regional NE" 
+                   TextColor="White"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center">
+            </Label>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1" WidthRequest="300" VerticalOptions="Center" HorizontalOptions="Center" 
+                             Spacing="20">
+            <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+
+                <Label Text="ALTERAR SENHA" FontAttributes="Bold" FontSize="30" 
+                   FontFamily="Vivo-font-bold" 
+                   HorizontalOptions="Center"
+                   />
+
+            </HorizontalStackLayout>
+            <Frame BackgroundColor="White" CornerRadius="10" HeightRequest="45" Padding="0" >
+                <Entry Placeholder="Senha atual" PlaceholderColor="Black"
+                   Margin="0"
+                       IsPassword="True"
+                   HorizontalTextAlignment="Center"
+                   Text="{Binding Old, Mode=TwoWay}"
+                   IsSpellCheckEnabled="false"
+                   FontFamily="Vivo-font-bold"
+                   BackgroundColor="Transparent"
+                       FontAttributes="None"
+                   FontSize="20"
+                   TextColor="Black"
+                   FontAutoScalingEnabled="True">
+                </Entry>
+            </Frame>
+            <Frame BackgroundColor="White" CornerRadius="10" HeightRequest="45" Padding="0" >
+                <Entry Placeholder="Nova senha" PlaceholderColor="Black"
+                   Margin="0"
+                       IsPassword="True"
+                   HorizontalTextAlignment="Center"
+                   Text="{Binding Newone, Mode=TwoWay}"
+                   IsSpellCheckEnabled="false"
+                   FontFamily="Vivo-font-bold"
+                   BackgroundColor="Transparent"
+                       FontAttributes="None"
+                   FontSize="20"
+                   TextColor="Black"
+                   FontAutoScalingEnabled="True">
+                </Entry>
+            </Frame>
+            <Frame BackgroundColor="White" CornerRadius="10" HeightRequest="45" Padding="0" >
+                <Entry Placeholder="Confirmar nova senha" PlaceholderColor="Black"
+                   Margin="0"
+                       IsPassword="True"
+                   HorizontalTextAlignment="Center"
+                   Text="{Binding Confirmnewone, Mode=TwoWay}"
+                   IsSpellCheckEnabled="false"
+                   FontFamily="Vivo-font-bold"
+                   BackgroundColor="Transparent"
+                   FontAttributes="None"
+                   FontSize="20"
+                   TextColor="Black"
+                   FontAutoScalingEnabled="True">
+                </Entry>
+            </Frame>
+            <HorizontalStackLayout BackgroundColor="Transparent" HorizontalOptions="Center">
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Row="2" Spacing="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Frame CornerRadius="10" Padding="0" BackgroundColor="MediumPurple" WidthRequest="100" HeightRequest="50">
+                    <Button  Text="Atualizar" TextColor="White" BackgroundColor="Transparent" Clicked="SaveButton_Clicked" />
+                </Frame>
+                <Frame CornerRadius="10" Padding="0" BackgroundColor="MediumPurple" WidthRequest="100" HeightRequest="50">
+                    <Button Text="Cancelar"
+                        BackgroundColor="White" 
+                        Clicked="Button_Cancel_Clicked"
+                        TextColor="MediumSlateBlue" />
+                </Frame>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="2" 
+              VerticalOptions="Center" 
+              HorizontalOptions="Center"
+              RowDefinitions="Auto,*">
+
+            <HorizontalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Center" >
+                <Image Source="logovivotaskbranca.png" WidthRequest="150">
+                    <Image.Shadow>
+                        <Shadow Brush="Black"
+                                    Offset="10,4"
+                                    Radius="2.5"
+                                    Opacity="0.1" />
+                    </Image.Shadow>
+                </Image>
+            </HorizontalStackLayout>
+
+            <FlexLayout VerticalOptions="Center" Grid.Row="1" HorizontalOptions="Center" JustifyContent="SpaceBetween" Grid.Column="0">
+                <Label x:Name="Version"
+                       Padding="10"
+                       FontSize="10"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center">
+                </Label>
+
+                <Label Text="Automação NE"
+                       Padding="10"
+                       FontSize="10"
+                       TextColor="White"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center">
+                </Label>
+            </FlexLayout>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

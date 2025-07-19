@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Vivo_Task.Pages"
+             x:Class="Vivo_Task.Pages.RegisterPage"
+             Title="RegisterPage"
+            BackgroundColor="Orange"
+             NavigationPage.HasBackButton="False"
+             NavigationPage.HasNavigationBar="False"
+             Shell.FlyoutItemIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False">
+
+    <BlazorWebView HostPage="wwwroot/index.html" BackgroundColor="Orange">
+        <BlazorWebView.RootComponents>
+            <RootComponent Selector="#app" ComponentType="{x:Type pages:Registration}" />
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+</ContentPage>

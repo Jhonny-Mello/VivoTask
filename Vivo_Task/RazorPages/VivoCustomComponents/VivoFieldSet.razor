@@ -1,0 +1,32 @@
+﻿@typeparam T
+@using System.IO.Compression;
+@using Radzen.Blazor;
+@using Microsoft.FluentUI.AspNetCore.Components;
+@using Microsoft.JSInterop;
+@using Vivo_Task.Shared_Static_Class.FundamentalModels
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="apply-component @Class" style="@Style">
+    <fieldset class="@ClassField" id="@this.GetHashCode()">
+        <span style="@(!FormValidated ? "" : "display:none")" class="icon-check-invalid">
+            *
+        </span>
+        <legend @onclick=OpenAction>
+            @if (Locked)
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size24.LockClosed().WithColor("#617ad9"))" />
+            }
+            else
+            {
+                @Header
+            }
+        </legend>
+        <div style="@(!IsOpened ? "display:none" : "")">
+            @Body
+        </div>
+        <div style="@(IsOpened ? "display:none" : "")">
+            @ClosedBody
+        </div>
+    </fieldset>
+</div>
+

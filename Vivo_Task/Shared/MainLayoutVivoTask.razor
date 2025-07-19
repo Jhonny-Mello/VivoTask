@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+@using Vivo_Task.ModelDTO;
+@using Vivo_Task.Models
+@inject NavigationManager NavManager;
+
+<div class="page">
+    <main>
+        <article class="content">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    protected async Task GoBackPage(MouseEventArgs args)
+    {
+        // NavManager.NavigateTo(pagehistory.GetGoBackPage());
+    }
+}

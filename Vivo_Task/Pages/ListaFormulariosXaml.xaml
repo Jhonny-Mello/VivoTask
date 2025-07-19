@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vivo_Task.Pages.ListaFormulariosXaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:pages="clr-namespace:Vivo_Task.Pages"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             x:DataType="vm:ListaFormViewModel"
+             Shell.TabBarIsVisible="False">
+    <Shell.TitleView>
+        <Grid
+        RowDefinitions="Auto"
+        ColumnDefinitions="Auto"
+        VerticalOptions="FillAndExpand"
+        HorizontalOptions="FillAndExpand"
+        Background="DarkSlateBlue">
+            <!--<Grid.Background>
+            <LinearGradientBrush EndPoint="1,0">
+                <GradientStop Color="DarkSlateBlue"
+                                Offset="0.1" />
+                <GradientStop Color="MediumSlateBlue"
+                                Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>-->
+            <Label Text="PROVAS DISPONÍVEIS" TextColor="white" Margin="5,15" CharacterSpacing="2" HorizontalOptions="Center" VerticalOptions="Center"
+               FontSize="18" VerticalTextAlignment="Center" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButton}">
+        </BackButtonBehavior>
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Recarregar" Command="{Binding ReloadData}" IconImageSource="reload.png"/>
+        <!--<ToolbarItem Text="Home" Clicked="ToolbarItem_Clicked" IconImageSource="arrowundo.png"/>-->
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="*">
+        <RefreshView Command="{Binding ReloadData}" Grid.Row="0" ZIndex="-10">
+        <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
+            <BlazorWebView.RootComponents>
+                    <RootComponent x:Name="rootComponent" Selector="#app" ComponentType="{x:Type pages:ListaFomularios}" />
+                </BlazorWebView.RootComponents>
+        </BlazorWebView>
+    </RefreshView>
+    </Grid>
+</ContentPage>

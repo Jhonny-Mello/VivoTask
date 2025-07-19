@@ -1,0 +1,128 @@
+﻿@page "/Avaliacoes"
+@using Vivo_Task.Services
+@using Vivo_Task.ModelDTO;
+@using Vivo_Task.Models
+@using Vivo_Task.ViewModels
+@using Vivo_Task.Shared_Static_Class.Converters;
+@using Vivo_Task.Shared_Static_Class.Data;
+@using Newtonsoft.Json
+@using System.ComponentModel
+@implements IDisposable
+@inject ResultadosProvaViewModel service
+
+@if (service.IsBusy)
+{
+    <div class="text-center mt-2">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <p><em>Carregando...</em></p>
+    </div>
+}
+else
+{
+    <Blazorise.Modal @bind-Visible="service.modalVisible" Closing="async args => await service.OnModalClosing(args)">
+        <Blazorise.ModalContent Centered Size="Blazorise.ModalSize.ExtraLarge">
+            <Blazorise.ModalHeader>
+                <Blazorise.ModalTitle>Filtros</Blazorise.ModalTitle>
+            </Blazorise.ModalHeader>
+            <Blazorise.ModalBody>
+                <div class="search-container">
+                    <input type="text" name="search" placeholder="Matricula ou Id..." class="search-input" @bind-value="FilterText" @bind-value:event="oninput">
+                    <a class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+                <br />
+                <div class="list-group-item">
+                    <Blazorise.DatePicker @bind-Dates="selectedDates" TValue="DateTime?" InputMode="Blazorise.DateInputMode.Date" ElementId="DatePicker" Inline SelectionMode="Blazorise.DateInputSelectionMode.Range" />
+                </div>
+
+                <div class="list-group-item">
+                    <h4>Nota Minima</h4>
+                    <input type="number" @bind="@filterNota" max="100" min="0" style="width:auto" />
+                    <Field>
+                        <Blazorise.Slider @bind-Value="filterNota" Min="0" Max="100" />
+                    </Field>
+                </div>
+                <br />
+                <Blazorise.Div Flex="Blazorise.Flex.InlineFlex.JustifyContent.Center">
+                    <Blazorise.Button Color="Blazorise.Color.Success" @onclick="() => service.modalVisible = !service.modalVisible">
+                        <Blazorise.Icon Name="Blazorise.IconName.Check" />
+                    </Blazorise.Button>
+                </Blazorise.Div>
+            </Blazorise.ModalBody>
+        </Blazorise.ModalContent>
+    </Blazorise.Modal>
+    <br />
+    <Blazorise.Div Flex="Blazorise.Flex.InlineFlex.JustifyContent.Between"
+                   Width="Blazorise.Width.Is100"
+                   Class="top-title">
+        <div>
+            @if (IsADM())
+            {
+                <h6>Ordenado por: @SwtichOrderProva()</h6>
+                <BlazorBootstrap.Switch @bind-Value="OrderByProva" />
+            }
+            else
+            {
+                <h6>
+                    Ordenador por: @SwtichOrderProva()
+                </h6>
+                <BlazorBootstrap.Switch @bind-Value="OrderByProva" Disabled="true" />
+            }
+        </div>
+        <br />
+    </Blazorise.Div>
+    <br />
+    @if (List != null)
+    {
+        if (List.Count > 0)
+        {
+            <Blazorise.ListGroup Style=" display: inline-flex !important; align-content: center; flex-wrap: wrap; justify-content: space-evenly; align-items: center; flex-direction:row;">
+
+                <Virtualize Items="List" Context="item" OverscanCount="5">
+
+                    <Blazorise.ListGroupItem Flex="Blazorise.Flex.InlineFlex.Column.NoWrap.JustifyContent.Center"
+                                             Style="min-width: 320px !important; max-width: 624px !important; border-radius:5%;">
+                        @*@onmousedown="@(a => TouchDown(a, item))" @onmouseup="@(a => TouchUp(a, item))" Class="@item.pressclass"*@
+
+                        <Blazorise.Div Flex="Blazorise.Flex.JustifyContent.Between" Width="Blazorise.Width.Is100">
+                            <Blazorise.Div TextAlignment="Blazorise.TextAlignment.Start">
+                                <Blazorise.Paragraph>
+                                    <Blazorise.Badge Color="Blazorise.Color.Secondary" TextWeight="Blazorise.TextWeight.Bold" Style="font-size:13px;">
+                                        ID Prova @item.ID_PROVA_RESPONDIDA
+                                    </Blazorise.Badge>
+                                </Blazorise.Paragraph>
+                                <Blazorise.Paragraph Margin="Blazorise.Margin.Is1.FromBottom"><b>Caderno:</b> @item.CADERNO</Blazorise.Paragraph>
+                                <Blazorise.Paragraph Margin="Blazorise.Margin.Is1.FromBottom"><b>Cargo:</b> @item.PUBLICO_CARGO.GetDisplayName()</Blazorise.Paragraph>
+                                <Blazorise.Paragraph Margin="Blazorise.Margin.Is1.FromBottom"><b>Matricula:</b> @item.RE_AVALIADO</Blazorise.Paragraph>
+                                <Blazorise.Paragraph Margin="Blazorise.Margin.Is1.FromBottom"><b>Realizado em:</b> @Convert.ToDateTime(item.DT_AVALIACAO).ToShortDateString()</Blazorise.Paragraph>
+                            </Blazorise.Div>
+                            <Blazorise.Div Flex="Blazorise.Flex.Column">
+                                <FluentButton BackgroundColor="#48438f" OnClick="ex => OpenPopUP(ex,item)">
+                                    <FluentIcon Value="@(new Icons.Filled.Size28.Search().WithColor("#ffffff"))" />
+                                </FluentButton>
+                                <br />
+                                <div id="star-five">
+                                    <Blazorise.Badge Color="Blazorise.Color.Secondary" TextWeight="Blazorise.TextWeight.Bold" Style="font-size:13px;">
+                                        @item.NOTA
+                                    </Blazorise.Badge>
+                                </div>
+                            </Blazorise.Div>
+                        </Blazorise.Div>
+                    </Blazorise.ListGroupItem>
+                </Virtualize>
+            </Blazorise.ListGroup>
+        }
+        else
+        {
+            <Callout Type="CalloutType.Warning" Heading="Não há provas realizadas com os filtros selecionados" Class="card-callout">
+            </Callout>
+        }
+    }
+}
+
+<Blazorise.MessageProvider />
+<ApplicationLoadingIndicator FullScreen>
+</ApplicationLoadingIndicator>
+
+

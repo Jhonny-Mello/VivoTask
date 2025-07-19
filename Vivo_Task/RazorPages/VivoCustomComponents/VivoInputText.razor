@@ -1,0 +1,30 @@
+﻿@using System.Globalization
+@using Vivo_Task.Services
+@using Newtonsoft.Json
+@using System.ComponentModel
+@using BlazorBootstrap
+@using Microsoft.AspNetCore.Components.Forms
+@inherits InputBase<string>
+
+<div>
+    <div class="input-area @CssClass" style="@Style">
+        <label for="@Id">@LabelText</label>
+        <input id="@Id" @attributes="AdditionalAttributes" @bind="@CurrentValue" disabled=@Disable type="@Type" placeholder="@Placeholder" />
+        @if (Rounded)
+        {
+            <div class="bar-rounded">
+            </div>
+        }
+        else
+        {
+            <div class="bar"></div>
+        }
+    </div>
+    @if (Context != null)
+    {
+        @if (ValidationFor != default!)
+        {
+            <ValidationMessage For="ValidationFor" class="text-danger" />
+        }
+    }
+</div>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviorPages="clr-namespace:Vivo_Task.Animations"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
+             xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             xmlns:templates="clr-namespace:Vivo_Task.Templates"
+             xmlns:cvt="clr-namespace:Vivo_Task.Converters"
+             xmlns:converters="clr-namespace:Vivo_Task.Shared_Static_Class.Converters"
+             xmlns:imgconverters="clr-namespace:Vivo_Task.Converters"
+             xmlns:modelDto="clr-namespace:Vivo_Task.Model_DTO"
+             xmlns:tp="clr-namespace:Vivo_Task.Templates"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             x:Class="Vivo_Task.Pages.JornadaXrotaCruzada"
+             x:DataType="vm:HomeJornadaViewModel"
+             Shell.BackgroundColor="DarkSlateBlue"
+             BackgroundColor="White"
+             Title="">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <Shell.TitleView>
+        <Grid RowDefinitions="Auto" ColumnDefinitions="Auto"
+            VerticalOptions="{OnPlatform Android='Center',WinUI='Center'}"
+            HorizontalOptions="{OnPlatform Android='Center',WinUI='Center'}"
+            Background="DarkSlateBlue">
+            <Label Text="GIRO V" TextColor="white" CharacterSpacing="1" Margin="0,0,43,0"
+                   HorizontalOptions="Start" VerticalOptions="Center"
+                   HorizontalTextAlignment="Center" FontSize="20" VerticalTextAlignment="Center"  
+                   FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <VerticalStackLayout Spacing="30" Margin="0,10">
+
+            <!--#region CARDS DE NAVEGAÇÃO GIRO V-->
+
+            <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" RowDefinitions="*" HeightRequest="700" >
+                <ScrollView  HorizontalScrollBarVisibility="Never" Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center" >
+                    <HorizontalStackLayout x:Name="Cards" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="model:CardsPrincipaisModel">
+                                <AbsoluteLayout WidthRequest="300" HeightRequest="460" Margin="40,0">
+                                    <Border BackgroundColor="DarkSlateBlue" Stroke="Transparent" StrokeThickness="0"
+                                        WidthRequest="300" HeightRequest="460" >
+                                        <Border.Shadow>
+                                            <Shadow Offset="10,0" Radius="0" Brush="Black" Opacity="0.3">
+                                            </Shadow>
+                                        </Border.Shadow>
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10"></RoundRectangle>
+                                        </Border.StrokeShape>
+                                        <VerticalStackLayout Spacing="15">
+                                            <Border BackgroundColor="DarkSlateBlue" Stroke="Transparent" StrokeThickness="0"
+                                                    Padding="0" >
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="0,0,18,18"></RoundRectangle>
+                                                </Border.StrokeShape>
+                                                <StackLayout>
+                                                    <Image HorizontalOptions="Center" WidthRequest="300" HeightRequest="300"
+                Source="{Binding IMAGEM}"
+                Aspect="AspectFill">
+                                                    </Image>
+                                                </StackLayout>
+                                            </Border>
+                                            <VerticalStackLayout Padding="20,0" >
+                                                <Label Text="{Binding TITULO}" 
+            FontAutoScalingEnabled="True"
+            HorizontalTextAlignment="Center"
+            CharacterSpacing="2" FontFamily="Vivo-font-bold"
+            FontSize="18"/>
+                                                <Label Text="{Binding DESCRICAO}"  
+            HorizontalTextAlignment="Center" HorizontalOptions="Center"
+            FontAutoScalingEnabled="True" FontFamily="Vivo-font-light" FontSize="15" />
+                                            </VerticalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border BackgroundColor="#9d17be" Stroke="Transparent" StrokeThickness="0" Padding="0,0"
+    AbsoluteLayout.LayoutBounds="0.9,0.97"
+    AbsoluteLayout.LayoutFlags="PositionProportional" >
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10"></RoundRectangle>
+                                        </Border.StrokeShape>
+                                        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Button Text="ACESSAR" Command="{Binding Click}"
+        Padding="0" WidthRequest="150" HeightRequest="40"
+        BackgroundColor="Transparent"  BorderColor="Transparent" FontSize="18"
+        TextColor="White" FlowDirection="RightToLeft" >
+                                                <Button.ImageSource>
+                                                    <FontImageSource Glyph="Search" FontFamily="Font Awesome 6 Free-Solid-900" Color="White" Size="16">
+                                                    </FontImageSource>
+                                                </Button.ImageSource>
+
+                                            </Button>
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </AbsoluteLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                        <BindableLayout.EmptyView>
+                            <ActivityIndicator  IsRunning="True" IsVisible="True" Grid.Row="0"
+            HorizontalOptions="Center" VerticalOptions="Center" 
+            WidthRequest="100" Color="DarkSlateBlue" HeightRequest="100" ZIndex="999" />
+                        </BindableLayout.EmptyView>
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </Grid>
+
+            <!--#endregion-->
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
+

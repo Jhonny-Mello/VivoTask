@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Vivo_Task.Pages"
+             x:Class="Vivo_Task.Pages.MopUpWarningAlert"
+             Color="Transparent"
+             CanBeDismissedByTappingOutsideOfPopup="True"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+
+    <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="0">
+        <Grid Padding="10" WidthRequest="300" HeightRequest="300" BackgroundColor="White" RowDefinitions="Auto,125,50">
+            <Image VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="0" WidthRequest="100" HeightRequest="100" Source="warning.png">
+                <Image.Shadow>
+                    <Shadow Brush="Black"
+                        Opacity="0.8" Offset="5,5" />
+                </Image.Shadow>
+            </Image>
+            
+            <Label VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="1" TextColor="Black" FontSize="Body" FontFamily="Vivo-font-bold" x:Name="Message" HorizontalTextAlignment="Center">
+            </Label>
+
+            <Button HorizontalOptions="End" BackgroundColor="MediumSlateBlue" WidthRequest="60" Clicked="Button_Clicked" IsVisible="{OnPlatform WinUI=false, Android=true}"
+                    Grid.Row="2" TextColor="White" FontSize="Medium" FontFamily="Vivo-font-bold" Text="Ok" >
+            </Button>
+        </Grid>
+
+        <BoxView Grid.Row="0" Grid.RowSpan="3" WidthRequest="300" HeightRequest="300" CornerRadius="7" BackgroundColor="Transparent" />
+    </Grid>
+
+</mopups:Popup>

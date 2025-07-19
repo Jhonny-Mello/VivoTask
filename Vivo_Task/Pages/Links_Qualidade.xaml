@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:tp="clr-namespace:Vivo_Task.Templates"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviorPages="clr-namespace:Vivo_Task.Animations"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             x:DataType="vm:LinksViewModel"
+             x:Class="Vivo_Task.Pages.Links_Qualidade" 
+             Title="Cards Consumer">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButton}">
+        </BackButtonBehavior>
+    </Shell.BackButtonBehavior>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    <Shell.TitleView>
+        <Grid
+            RowDefinitions="Auto"
+            ColumnDefinitions="Auto"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Background="DarkSlateBlue">
+            <!--<Grid.Background>
+                <LinearGradientBrush EndPoint="1,0">
+                    <GradientStop Color="DarkSlateBlue"
+                                    Offset="0.1" />
+                    <GradientStop Color="MediumSlateBlue"
+                                    Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>-->
+            <Label Text="LINKS JORNADA" TextColor="white" Margin="10,9" CharacterSpacing="4" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="23" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <Grid BackgroundColor="DarkSlateBlue">
+            <CollectionView ItemsSource="{Binding Group_link}"
+                IsGrouped="true">
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="model:Group_Links_data">
+                        <Border 
+                            StrokeThickness="4"
+                            StrokeShape="RoundRectangle 40,40,40,40"
+                            Background="MediumSlateBlue"
+                            Padding="16,8"
+                            Margin="0,40"
+                            HorizontalOptions="Center">
+                            <Label Text="{Binding Nome}"
+                               HorizontalOptions="Center"
+                                BackgroundColor="MediumSlateBlue"
+                                TextColor="White"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Links_data">
+                        <VerticalStackLayout >
+                            <Grid HorizontalOptions="FillAndExpand" ColumnDefinitions="*,Auto" RowDefinitions="Auto" Padding="30,0">
+                                <Grid Padding="10" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" Grid.Column="0" Grid.Row="0">
+                                    <Label Grid.Column="1"
+                                           FontSize="18" FontAutoScalingEnabled="True"
+                                            Text="{Binding Tema}"
+                                           FontFamily="Vivo-font-bold"
+                                FontAttributes="Bold" />
+                                    <Label Grid.Row="1"
+                                        Grid.Column="1"
+                                           FontSize="15"
+                                           FontFamily="Vivo-font-light"
+                                        Text="{Binding Titulo}"
+                                        FontAttributes="Italic"
+                                        VerticalOptions="End" />
+                                </Grid>
+                                <Button Grid.Column="1" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                                    BackgroundColor="SlateBlue"
+                                    CommandParameter="{Binding .}" Clicked="Button_Clicked" Grid.Row="0"
+                                    Text="{icons:FontAwesomeSolid Icon=MagnifyingGlass}" RotationY="180">
+                                    <Button.Behaviors>
+                                        <toolkit:AnimationBehavior EventName="Pressed">
+                                            <toolkit:AnimationBehavior.AnimationType>
+                                                <behaviorPages:SampleScaleToAnimation 
+                                        Easing="{x:Static Easing.Linear}"
+                                        Length="250"
+                                        Scale="1.1"/>
+                                            </toolkit:AnimationBehavior.AnimationType>
+                                        </toolkit:AnimationBehavior>
+                                        <toolkit:AnimationBehavior EventName="Released">
+                                            <toolkit:AnimationBehavior.AnimationType>
+                                                <behaviorPages:SampleScaleToAnimation 
+                                        Easing="{x:Static Easing.Linear}"
+                                        Length="250"
+                                        Scale="1.0"/>
+                                            </toolkit:AnimationBehavior.AnimationType>
+                                        </toolkit:AnimationBehavior>
+                                    </Button.Behaviors>
+                                </Button>
+                            </Grid>
+                            <BoxView HeightRequest="2" Color="Grey" Margin="5,0" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

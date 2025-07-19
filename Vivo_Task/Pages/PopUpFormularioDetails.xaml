@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Vivo_Task"
+             xmlns:pages="clr-namespace:Vivo_Task.Pages"             
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"             
+             x:Class="Vivo_Task.Pages.PopUpFormularioDetails"
+             x:DataType="vm:AnswerFormViewModel"
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             Shell.TabBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False">
+    <BlazorWebView HostPage="wwwroot/index.html">
+        <BlazorWebView.RootComponents >
+            <RootComponent x:Name="rootComponent" Selector="#app" ComponentType="{x:Type pages:Formulario}"/>
+        </BlazorWebView.RootComponents>
+    </BlazorWebView>
+
+</ContentPage>

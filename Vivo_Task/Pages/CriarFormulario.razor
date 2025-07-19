@@ -1,0 +1,464 @@
+﻿@page "/CriarFormulario"
+@layout SinglePageLayout
+@implements IDisposable;
+@using CommunityToolkit.Maui.Views
+@using System.ComponentModel
+@using Vivo_Task.Models
+@using Blazorise.RichTextEdit
+@using Vivo_Task.ViewModels
+@inject CreateFormViewModel service;
+
+<style>
+    .list-group-item {
+        align-content: flex-start !important
+    }
+
+    .form-group {
+        width: 100% !important
+    }
+
+    .legend-header {
+        width: 100% !important;
+        justify-content: space-between !important;
+        display: inline-flex !important;
+    }
+</style>
+@if (service.IsBusy)
+{
+    <div class="text-center mt-2">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <p><em>Carregando...</em></p>
+    </div>
+}
+else
+{
+    <Blazorise.Validations @ref="validations" Mode="Blazorise.ValidationMode.Auto">
+        <ul class="list-group-flush" style="padding: 0 !important">
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label><b>Tipo de Prova</b></label>
+                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                        <Blazorise.Select SelectedValue="service.TIPO_PROVA"
+                                          SelectedValueChanged="async args => await TPPROVA_Changed(args)"
+                                          TValue="string" Multiple="false"
+                                          Width="Blazorise.Width.Is100">
+                            <ChildContent>
+                                <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                @if (Setting.UserBasicDetail.Perfil.Any(x => x.Perfil_Plataforma.ID_PERFIL == 9))
+                                {
+                                    <Blazorise.SelectItem Value="@("Jornada")">Jornada</Blazorise.SelectItem>
+                                }
+                                <Blazorise.SelectItem Value="@("Jornada Gestor")">Jornada Gestor</Blazorise.SelectItem>
+                                <Blazorise.SelectItem Value="@("Rota Cruzada")">Rota Cruzada</Blazorise.SelectItem>
+                            </ChildContent>
+                            <Feedback>
+                                <Blazorise.ValidationNone>Por favor escolha algum valor para Tipo de prova.</Blazorise.ValidationNone>
+                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                            </Feedback>
+                        </Blazorise.Select>
+                    </Blazorise.Validation>
+                </div>
+            </li>
+            @if (service.TIPO_PROVA != "Rota Cruzada")
+            {
+                <li class="list-group-item">
+                    <div class="form-group">
+                        <label><b>Elegíveis</b></label>
+                        <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                            <Blazorise.Select TValue="bool" @bind-SelectedValue="service.ELEGIVEL" Width="Blazorise.Width.Is100">
+                                <ChildContent>
+                                    <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                    <Blazorise.SelectItem Value="true">Sim</Blazorise.SelectItem>
+                                    <Blazorise.SelectItem Value="false">Não</Blazorise.SelectItem>
+                                </ChildContent>
+                                <Feedback>
+                                    <Blazorise.ValidationNone>Por favor escolha algum valor para Fixa.</Blazorise.ValidationNone>
+                                    <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                    <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                                </Feedback>
+                            </Blazorise.Select>
+                        </Blazorise.Validation>
+                    </div>
+                </li>
+            }
+            <li class="list-group-item">
+                <FluentStack VerticalAlignment="VerticalAlignment.Center" Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal"
+                             HorizontalAlignment="HorizontalAlignment.Start">
+                    <span><b>Data de início: </b></span>
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Calendar().WithColor("#000000"))"
+                                  BackgroundColor="#ffffff" Style="color:black;"
+                                  Appearance="Appearance.Outline" OnClick="async () => service.DT_INIT = await service.SetDate()">
+                        @service.DT_INIT.ToShortDateString()
+                    </FluentButton>
+                </FluentStack>
+            </li>
+            @if (service.TIPO_PROVA == "Jornada" || service.TIPO_PROVA == "Jornada Gestor")
+            {
+                <li class="list-group-item">
+                    <FluentStack VerticalAlignment="VerticalAlignment.Center" Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal"
+                                 HorizontalAlignment="HorizontalAlignment.Start">
+                        <span><b>Data final: </b></span>
+                        <FluentButton IconEnd="@(new Icons.Regular.Size16.Calendar().WithColor("#000000"))"
+                                      BackgroundColor="#ffffff" Style="color:black;"
+                                      Appearance="Appearance.Outline" OnClick="async () => service.DT_FINAL = await service.SetDate()">
+                            @if (service.DT_FINAL.HasValue)
+                            {
+                                @service.DT_FINAL.Value.ToShortDateString()
+                            }
+                            else
+                            {
+                                @("--/--/----")
+                            }
+                        </FluentButton>
+                    </FluentStack>
+                </li>
+            }
+
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label><b>Cargo</b></label>
+                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                        <Blazorise.Select SelectedValue="service.CARGO"
+                                          SelectedValueChanged="async args => await CARGO_Changed(args)"
+                                          TValue="int" Multiple="false"
+                                          Width="Blazorise.Width.Is100">
+                            <ChildContent>
+                                <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                @foreach (var item in service.datafilterscargos)
+                                {
+                                    <Blazorise.SelectItem Value="item.Value">@item.Text</Blazorise.SelectItem>
+                                }
+                            </ChildContent>
+                            <Feedback>
+                                <Blazorise.ValidationNone>Por favor escolha algum valor para cargo.</Blazorise.ValidationNone>
+                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                            </Feedback>
+                        </Blazorise.Select>
+                    </Blazorise.Validation>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label><b>Fixa</b></label>
+                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                        <Blazorise.Select TValue="bool" SelectedValueChanged="async args => await FIXA_Changed((bool)args)" Width="Blazorise.Width.Is100">
+                            <ChildContent>
+                                <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                <Blazorise.SelectItem Value="true">Sim</Blazorise.SelectItem>
+                                <Blazorise.SelectItem Value="false">Não</Blazorise.SelectItem>
+                            </ChildContent>
+                            <Feedback>
+                                <Blazorise.ValidationNone>Por favor escolha algum valor para Fixa.</Blazorise.ValidationNone>
+                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                            </Feedback>
+                        </Blazorise.Select>
+                    </Blazorise.Validation>
+                </div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label><b>Quantidade de perguntas</b></label>
+                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                        <Blazorise.NumericPicker @bind-Value="service.QTD_PERGUNTA" @onchange="async () => await service.GetTemas()" Border="Blazorise.Border.Rounded" EnableStep="false" ShowStepButtons="false">
+                            <Feedback>
+                                <Blazorise.ValidationNone>Por favor informe a quantidade total de perguntas que esta prova terá.</Blazorise.ValidationNone>
+                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                            </Feedback>
+                        </Blazorise.NumericPicker>
+                    </Blazorise.Validation>
+                </div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="form-group">
+                    <label><b>Quantidade de temas</b></label>
+                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                        <Blazorise.NumericPicker @bind-Value="service.QTD_TEMA" @onchange="Qtd_Temas_Changed" Border="Blazorise.Border.Rounded" EnableStep="false" ShowStepButtons="false">
+                            <Feedback>
+                                <Blazorise.ValidationNone>Por favor informe a quantidade total de temas que esta prova terá.</Blazorise.ValidationNone>
+                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                            </Feedback>
+                        </Blazorise.NumericPicker>
+                    </Blazorise.Validation>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="form-group">
+                    <RadzenFieldset Collapsed="false" AllowCollapse="true" Style="padding: 0 !important">
+                        <HeaderTemplate>
+                            <span class="d-inline-flex">
+                                <RadzenIcon Icon="" class="me-1" />
+                                <label><b>Temas</b></label>
+                            </span>
+                        </HeaderTemplate>
+                        <ChildContent>
+                            @if (!service.TemaIsBusy)
+                            {
+
+                                if (service.QTD_TEMA == 0)
+                                {
+                                    <RadzenStack Gap="0" class="rz-py-8 rz-px-12">
+                                        <RadzenAlert Title="Atenção!" AllowClose="false"
+                                                     AlertStyle="Radzen.AlertStyle.Danger" ShowIcon="false"
+                                                     Variant="Radzen.Variant.Flat" Shade="Radzen.Shade.Lighter">
+                                            Informe a quatidade de temas para o formulário!
+                                        </RadzenAlert>
+                                    </RadzenStack>
+                                }
+                                else
+                                {
+                                    if (service.QTD_PERGUNTA != 0)
+                                    {
+                                        foreach (var item in service.TEMAS_QUANTIDADE.Select((x, index) => new { x, index }))
+                                        {
+                                            <RadzenFieldset AllowCollapse="true" Style="width: min-content; margin: 20px; min-width: 90%;align-self: flex-start;" Collapsed="false">
+                                                <HeaderTemplate>
+                                                    <div class="d-inline-flex align-items-center align-middle gap-3">
+                                                        <label>
+                                                            <RadzenIcon Icon="inventory_2" class="me-1" />
+                                                            <b>
+                                                                Tema N° @(item.index + 1)
+                                                            </b>
+                                                        </label>
+                                                        @if (service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum() < service.QTD_PERGUNTA)
+                                                        {
+                                                            <Blazorise.Badge Color="Blazorise.Color.Warning">
+                                                                <label><b>@(service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum()) / @service.QTD_PERGUNTA</b></label>
+                                                            </Blazorise.Badge>
+                                                        }
+                                                        else if (service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum() == service.QTD_PERGUNTA)
+                                                        {
+                                                            <Blazorise.Badge Color="Blazorise.Color.Success">
+                                                                <label><b>@(service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum()) / @service.QTD_PERGUNTA</b></label>
+                                                            </Blazorise.Badge>
+                                                        }
+                                                        else
+                                                        {
+                                                            <Blazorise.Badge Color="Blazorise.Color.Danger">
+                                                                <label><b>@(service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum()) / @service.QTD_PERGUNTA</b></label>
+                                                            </Blazorise.Badge>
+                                                        }
+                                                    </div>
+                                                </HeaderTemplate>
+                                                <ChildContent>
+                                                    <span class="d-inline-flex">
+                                                        <label><b>Quantidade de questões para o tema</b></label>
+                                                    </span>
+                                                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                                                        <Blazorise.NumericPicker @bind-Value=item.x.Qtd Placeholder=""
+                                                                                 Border="Blazorise.Border.Rounded" EnableStep="false" ShowStepButtons="false">
+                                                            <Feedback>
+                                                                <Blazorise.ValidationNone></Blazorise.ValidationNone>
+                                                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                                                <Blazorise.ValidationError>Por favor informe algum valor para esta alternativa.</Blazorise.ValidationError>
+                                                            </Feedback>
+                                                        </Blazorise.NumericPicker>
+                                                    </Blazorise.Validation>
+                                                    <br />
+                                                    <span class="d-inline-flex justify-content-between w-100">
+                                                        <label><b>Tema</b></label>
+                                                        @if (item.x.Tema != 0)
+                                                        {
+                                                            <label><b>Qtd. disp: @(service.datafilterstemas.Where(x => x.ID_TEMAS == item.x.Tema).FirstOrDefault().QTD_TEMA)</b></label>
+                                                        }
+                                                    </span>
+                                                    @*<RadzenDropDown @bind-Value=item.x.Tema
+                                                        Data=@(service.datafilterstemas
+                                                               .Select(x => new {ID = x.ID_TEMAS, TEMA = x.TEMAS}).DistinctBy(x=>x.TEMA))
+                                                        TValue="int" Multiple="false" AllowFiltering
+                                                        AllowSelectAll="false" Style="width: 100%; max-width: 600px;"
+                                                        ValueProperty="ID" TextProperty="TEMA">
+                                                        </RadzenDropDown>*@
+
+                                                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                                                        <Blazorise.Select TValue="int" SelectedValueChanged="args => TEMA_Changed(item.index, args)"
+                                                                          SelectedValue="item.x.Tema" Width="Blazorise.Width.Is100">
+                                                            <ChildContent>
+                                                                <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                                                @foreach (var item in service.datafilterstemas
+                                                      .Select(x => new { ID = x.ID_TEMAS, TEMA = x.TEMAS }).DistinctBy(x => x.TEMA))
+                                                                {
+                                                                    <Blazorise.SelectItem Value="item.ID">@item.TEMA</Blazorise.SelectItem>
+                                                                }
+                                                            </ChildContent>
+                                                            <Feedback>
+                                                                <Blazorise.ValidationNone>Por favor escolha algum valor para Fixa.</Blazorise.ValidationNone>
+                                                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                                                            </Feedback>
+                                                        </Blazorise.Select>
+                                                    </Blazorise.Validation>
+                                                    <br />
+                                                    <span class="d-inline-flex justify-content-between w-100">
+                                                        <label><b>Sub-Tema</b></label>
+                                                        @if (item.x.Sub_tema != 0)
+                                                        {
+                                                            <label><b>Qtd. disp: @(service.datafilterstemas.Where(x => x.ID_SUB_TEMAS == item.x.Sub_tema).FirstOrDefault().QTD_SUB_TEMA)</b></label>
+                                                        }
+                                                    </span>
+                                                    <Blazorise.Validation Validator="Blazorise.ValidationRule.IsSelected">
+                                                        <Blazorise.Select TValue="int" @bind-SelectedValue=item.x.Sub_tema
+                                                                          Width="Blazorise.Width.Is100">
+                                                            <ChildContent>
+                                                                <Blazorise.SelectItem Value="@(string.Empty)">Selecione</Blazorise.SelectItem>
+                                                                @foreach (var item in service.datafilterstemas.Where(x => x.ID_TEMAS == item.x.Tema && x.QTD_SUB_TEMA > 0))
+                                                                {
+                                                                    <Blazorise.SelectItem Value="item.ID_SUB_TEMAS">@item.SUB_TEMAS</Blazorise.SelectItem>
+                                                                }
+                                                            </ChildContent>
+                                                            <Feedback>
+                                                                <Blazorise.ValidationNone>Por favor escolha algum valor para Fixa.</Blazorise.ValidationNone>
+                                                                <Blazorise.ValidationSuccess></Blazorise.ValidationSuccess>
+                                                                <Blazorise.ValidationError>Escolha uma opção válida!</Blazorise.ValidationError>
+                                                            </Feedback>
+                                                        </Blazorise.Select>
+                                                    </Blazorise.Validation>
+                                                </ChildContent>
+                                            </RadzenFieldset>
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <RadzenStack Gap="0" class="rz-py-8 rz-px-12">
+                                    <span class="spinner-border spinner-border-sm"></span>
+                                </RadzenStack>
+                            }
+                        </ChildContent>
+                    </RadzenFieldset>
+                </div>
+            </li>
+        </ul>
+    </Blazorise.Validations>
+    <div class="rz-p-12 rz-text-align-center">
+        <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@Submit">
+            <Blazorise.Icon Name="Blazorise.IconName.CheckCircle">
+            </Blazorise.Icon>
+            Criar
+        </Blazorise.Button>
+        <Blazorise.Button Color="Blazorise.Color.Warning" @onclick="LimparForm">
+            <Blazorise.Icon Name="Blazorise.IconName.Undo">
+            </Blazorise.Icon>
+            Limpar
+        </Blazorise.Button>
+    </div>
+}
+
+<Blazorise.MessageProvider />
+<ApplicationLoadingIndicator />
+
+@code {
+    protected RichTextEdit richTextEditRef;
+    Blazorise.Validations validations;
+
+    async Task Submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            if (service.TEMAS_QUANTIDADE.All(x => x.Tema != 0) &&
+                service.TEMAS_QUANTIDADE.All(x => x.Sub_tema != 0))
+            {
+                if ((service.QTD_PERGUNTA - service.TEMAS_QUANTIDADE.Select(x => x.Qtd).Sum()) == 0)
+                {
+                    await service.CreateForm();
+                    await Shell.Current.GoToAsync("/ListaFormularios");
+                    LimparForm();
+                    return;
+                }
+                App.Current.MainPage.ShowPopup(new MopUpAlert("A quantidade total de perguntas/tema não é igual a quantidade total de perguntas escolhidas para o fomulário."));
+                return;
+            }
+            App.Current.MainPage.ShowPopup(new MopUpAlert("Por favor informe valores para todos os temas para esta prova."));
+            return;
+        }
+        App.Current.MainPage.ShowPopup(new MopUpAlert("Por favor informe os dados corretamente."));
+        return;
+    }
+
+    public async Task Qtd_Temas_Changed(ChangeEventArgs args)
+    {
+        service.TEMAS_QUANTIDADE = new();
+        for (int i = 0; i < service.QTD_TEMA; i++)
+        {
+            service.TEMAS_QUANTIDADE.Add(new());
+        }
+        await service.GetTemas();
+        this.StateHasChanged();
+    }
+
+    public async Task TPPROVA_Changed(string value)
+    {
+        service.TIPO_PROVA = value;
+        await service.GetTemas();
+        this.StateHasChanged();
+    }
+
+    public async Task FIXA_Changed(bool value)
+    {
+        service.FIXA = value;
+        await service.GetTemas();
+        this.StateHasChanged();
+    }
+
+    public async Task CARGO_Changed(int value)
+    {
+        service.CARGO = value;
+        await service.GetTemas();
+        this.StateHasChanged();
+    }
+
+    public void LimparForm()
+    {
+        service.TIPO_PROVA = string.Empty;
+        service.DT_INIT = DateTime.Now;
+        service.DT_FINAL = new();
+        service.QTD_PERGUNTA = new();
+        service.QTD_TEMA = new();
+        service.CARGO = new();
+        service.FIXA = new();
+        service.TemaIsBusy = new();
+        service.TEMAS_QUANTIDADE = new();
+    }
+
+    public async Task TEMA_Changed(int index, int value)
+    {
+        service.TEMAS_QUANTIDADE[index].Tema = value;
+        service.TEMAS_QUANTIDADE[index].Sub_tema = 0;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        service.PropertyChanged += OnStateChanged;
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //if (service.User.User.ID == 0)
+        //{
+        //    service.navigationManager.NavigateTo("/");
+        //}
+        //else
+        //{
+        //    if (!service.User.User.IsSuporte())
+        //    {
+        //        service.navigationManager.NavigateTo("/");
+        //    }
+        //}
+    }
+
+
+    private void OnStateChanged(object? sender, PropertyChangedEventArgs e) => StateHasChanged();
+
+    public void Dispose()
+    {
+        service.PropertyChanged -= OnStateChanged;
+    }
+}

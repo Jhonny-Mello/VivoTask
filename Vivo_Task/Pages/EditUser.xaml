@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Vivo_Task.Models"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:mi="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             xmlns:tp="clr-namespace:Vivo_Task.Templates"
+             xmlns:icon="clr-namespace:Vivo_Task.Models"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:converter="clr-namespace:Vivo_Task.Converters"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             x:Class="Vivo_Task.Pages.EditUser" 
+             x:DataType="vm:EdituserViewModel"
+             BackgroundColor="MediumSlateBlue"
+             Shell.FlyoutBehavior="Disabled"
+             NavigationPage.HasNavigationBar="True"
+             Shell.NavBarIsVisible="True">
+
+    <Shell.TitleView>
+        <FlexLayout FlexLayout.JustifyContent="SpaceBetween" Background="DarkSlateBlue" >
+            <Label Text="{mi:Fluent Icon=ArrowLeft20}" TextColor="White" FontSize="20" 
+                       Margin="10,0"
+                       HorizontalOptions="Start" VerticalOptions="Center" >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="Alterar Imagem" TextColor="White" Margin="50,9" CharacterSpacing="2" 
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                        FontSize="23" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+            <Label />
+        </FlexLayout>
+    </Shell.TitleView>
+
+    <VerticalStackLayout HorizontalOptions="FillAndExpand" Padding="{OnPlatform Android='0,100',WinUI='0,10'}" Spacing="{OnPlatform Android='40',WinUI='15'}" >
+        <VerticalStackLayout.Background>
+            <RadialGradientBrush >
+                <GradientStopCollection>
+                    <GradientStop Color="#660099"
+                Offset="0.3" />
+                    <GradientStop Color="DarkSlateBlue"
+                Offset="1" />
+                </GradientStopCollection>
+            </RadialGradientBrush>
+        </VerticalStackLayout.Background>
+        <Grid Grid.Row="1">
+            <Border Stroke="White" StrokeThickness="1" WidthRequest="{OnPlatform WinUI='400', Android='300'}" HeightRequest="{OnPlatform WinUI='400', Android='300'}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="{OnPlatform WinUI='400', Android='150'}"></RoundRectangle>
+                </Border.StrokeShape>
+                <Image Aspect="AspectFill" VerticalOptions="Center" HorizontalOptions="Center" 
+                           SemanticProperties.Description="Foto de Perfil" WidthRequest="{OnPlatform WinUI='400', Android='300'}" HeightRequest="{OnPlatform WinUI='400', Android='300'}"
+                           Source="{Binding User.UserAvatar,Converter={converter:ImageStringConverterOrDefault}}">
+                </Image>
+            </Border>
+
+        </Grid>
+        <HorizontalStackLayout Spacing="75" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center">
+            <Border Stroke="White" StrokeThickness="1" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="200"></RoundRectangle>
+                </Border.StrokeShape>
+                <ImageButton Clicked="Photo_Clicked" Background="Transparent" 
+                             BorderColor="Transparent"
+                             Source="camera.png" 
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center" 
+                             BackgroundColor="Transparent"
+                             Aspect="AspectFit"
+                             WidthRequest="25"
+                             HeightRequest="25"/>
+            </Border>
+            <Border Stroke="White" StrokeThickness="1" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="200"></RoundRectangle>
+                </Border.StrokeShape>
+                <ImageButton Clicked="Get_Local_image" 
+                                 Source="image.png"
+                                 WidthRequest="25"
+                                 HeightRequest="25"
+                                 VerticalOptions="Center" 
+                                 HorizontalOptions="Center" 
+                                 BackgroundColor="Transparent"
+                                 Aspect="AspectFit" />
+            </Border>
+        </HorizontalStackLayout>
+        <Border Stroke="White" StrokeThickness="1" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" IsVisible="{Binding User.ChangeAvatar}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="200"></RoundRectangle>
+            </Border.StrokeShape>
+            <Button Clicked="SaveButton_Clicked" x:Name="SaveButton" Padding="0"
+                    Text="{mi:FontAwesomeSolid Icon=Upload}" FontSize="20" 
+                    VerticalOptions="Center" HorizontalOptions="Center" 
+                    BackgroundColor="Transparent" BorderColor="Transparent" />
+        </Border>
+    </VerticalStackLayout>
+
+</ContentPage>

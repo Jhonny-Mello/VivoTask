@@ -1,0 +1,157 @@
+﻿@layout SinglePageLayout
+@using Vivo_Task.ViewModels;
+@using System.ComponentModel;
+@using Vivo_Task.Shared_Static_Class.Data;
+@using Vivo_Task.Shared_Static_Class.Converters;
+@implements IDisposable;
+
+@inject ListaFormViewModel service;
+
+
+<style>
+    bb-callout {
+        padding-bottom: 0 !important;
+    }
+</style>
+
+
+@if (service.IsBusy)
+{
+    <div class="text-center mt-2">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <p><em>Carregando...</em></p>
+    </div>
+}
+else
+{
+    int i = 0;
+    @foreach (var item in service.questions.GroupBy(x => new { x.TP_FORMS, x.CADERNO, x.CARGO, x.FIXA }).Select(x => x.FirstOrDefault()).OrderByDescending(x => x.ID_PROVA))
+    {
+        @*CalloutType callouttype;
+        if (item.TP_FORMS == "Jornada")
+        {
+            callouttype = CalloutType.Danger;
+        }
+        else if (item.TP_FORMS == "Jornada Gestor")
+        {
+            callouttype = CalloutType.Warning;
+        }
+        else
+        {
+            callouttype = CalloutType.Tip;
+        } *@
+
+
+        i++;
+
+        <Callout Heading="@($"Tipo: {item.TP_FORMS}")">
+            <Blazorise.Card>
+                <Blazorise.CardBody>
+                    <div class="lado-a-lado">
+                        <div>
+                            <p><b>ID Prova</b>: @item.ID_PROVA</p>
+                            <p><b>Caderno</b>: @item.CADERNO</p>
+                            <p><b>Cargo</b>: @(((Cargos)Convert.ToInt32(item.CARGO)).GetDisplayName())</p>
+                            <p><b>Canal</b>: @(((Canal)Convert.ToInt32(item.CANAL)).GetDisplayName())</p>
+                            <p><b>Fixa</b>: @(Convert.ToBoolean(item.FIXA) == true ? "Sim" : "Não")</p>
+                            <p><b>Qtde. Perguntas</b>: @service.questions.Where(x => x.TP_FORMS == item.TP_FORMS && x.CADERNO == item.CADERNO && x.CARGO == item.CARGO).Count()</p>
+                            <p><b>Data Início</b>: @(item.DT_INICIO_AVALIACAO.HasValue ? "-" : item.DT_INICIO_AVALIACAO.Value.ToShortDateString())</p>
+                        </div>
+                        <div>
+                            @if (item.ID_PROVA.HasValue)
+                            {
+                                <FluentIcon Value="@(new Icons.Filled.Size32.Play().WithColor("#6f5ed7"))" Style="width:120px"
+                                            OnClick="async () => await IrParaPaginaDestino(item.ID_PROVA.Value, item.CARGO.Value, item.TP_FORMS, item.FIXA.Value, item.CADERNO.Value)" />
+                            }
+                        </div>
+                    </div>
+                </Blazorise.CardBody>
+                <Blazorise.CardFooter>
+                    @if ((!item.DT_FINALIZACAO.HasValue || item.DT_FINALIZACAO.Value > DateTime.Now) && item.TP_FORMS == "Rota Cruzada")
+                    {
+                        <Blazorise.Button TextAlignment="Blazorise.TextAlignment.Center" @onclick="async () => await FinalizarFormulario(Convert.ToInt32(item.CARGO), item.CADERNO.Value, item.TP_FORMS, Convert.ToBoolean(item.FIXA))">
+                            <Blazorise.Icon Name="Blazorise.IconName.Delete" TextColor="Blazorise.TextColor.Danger" IconSize="Blazorise.IconSize.Small" />
+                        </Blazorise.Button>
+                    }
+                </Blazorise.CardFooter>
+            </Blazorise.Card>
+        </Callout>
+
+    }
+    if (i == 0)
+    {
+        <Alert Color="AlertColor.Danger" Class="card">
+            <div class="text-center mt-2" style="margin:0;">
+                <p><em>Não há nenhum formulário disponível no momento.</em></p>
+            </div>
+        </Alert>
+    }
+}
+
+<Blazorise.PageProgressProvider />
+<NotificationProvider />
+<ApplicationLoadingIndicator />
+<Blazorise.MessageProvider />
+<Preload />
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        service.PropertyChanged += OnStateChanged;
+        await base.OnInitializedAsync();
+    }
+
+    private async Task IrParaPaginaDestino(int ID_PROVA, int CARGO, string TIPO_FORMS, bool FIXA, int CADERNO)
+    {
+        await Shell.Current.GoToAsync($"Jornada/{nameof(PopUpFormularioDetails)}", true, new Dictionary<string, object>{
+            {"CADERNO",CADERNO },
+            {"TIPO_FORMS",TIPO_FORMS },
+            {"CARGO",CARGO },
+            {"FIXA",FIXA },
+            {"vm",service._Formcontextservice },
+            {"ID_PROVA", ID_PROVA}
+        });
+
+        //string url = "/formulario/" + string.Join(",", service.questions
+        //            .Where(x => x.CARGO.Split(new[] { ';' }).Select(c => int.Parse(c)).Contains(CARGO))
+        //            .Where(x => x.TP_FORMS.Split(new[] { ';' }).Select(c => c).Contains(TIPO_FORMS))
+        //            .Where(x => x.FIXA == FIXA)
+        //            .Where(x => x.CADERNO == Caderno).Select(x => x.ID_QUESTION)) + $"/{Caderno}/{TIPO_FORMS}/{CARGO}/{FIXA}";
+
+
+
+
+        //service.navigationManager.NavigateTo(url);
+    }
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await service.LoadData();
+    //    //if (service.User.User.ID == 0)
+    //    //{
+    //    //    service.navigationManager.NavigateTo("/");
+    //    //}
+    //    //else
+    //    //{
+    //    //    if (!service.User.User.IsSuporte())
+    //    //    {
+    //    //        service.navigationManager.NavigateTo("/");
+    //    //    }
+    //    //}
+    //}
+
+    private async Task FinalizarFormulario(int cargo, int caderno, string tp_forms, bool fixa)
+    {
+        await service.FinalizarForm(cargo, caderno, tp_forms, fixa);
+        StateHasChanged();
+    }
+
+    private void OnStateChanged(object? sender, PropertyChangedEventArgs e) => StateHasChanged();
+
+    public void Dispose()
+    {
+        service.PropertyChanged -= OnStateChanged;
+    }
+
+}
+

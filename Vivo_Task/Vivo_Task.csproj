@@ -1,0 +1,460 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-ios;net8.0-maccatalyst;net8.0-android34.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!--<WindowsSdkPackageVersion>10.0.19041.54</WindowsSdkPackageVersion>
+		<CsWinRTRcwFactoryFallbackGeneratorForceOptOut>true</CsWinRTRcwFactoryFallbackGeneratorForceOptOut>-->
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Vivo_Task</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDefaultCssItems>false</EnableDefaultCssItems>
+		<!-- Display name -->
+		<ApplicationTitle>Vivo Task</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>***.*********.********</ApplicationId>
+		<ApplicationIdGuid>*********-****-****-****-***********</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>25</ApplicationVersion>
+
+		<!--<WindowsPackageType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">None</WindowsPackageType>-->
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<Platforms>AnyCPU</Platforms>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<PackageCertificateThumbprint>5951E571C44A825275B882320B61E9F7B352B4E2</PackageCertificateThumbprint>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA512</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+		<GenerateTestArtifacts>False</GenerateTestArtifacts>
+		<AppInstallerUri>https://link.com</AppInstallerUri>
+		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+	</PropertyGroup>
+	<!--<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='iOS'">
+		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>-->
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+		<AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+		<AndroidUseAapt2>True</AndroidUseAapt2>
+		<WarningsAsErrors>False</WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+		<AndroidKeyStore>True</AndroidKeyStore>
+		<AndroidSigningKeyStore>key</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>password</AndroidSigningKeyPass>
+		<AndroidSigningStorePass>password</AndroidSigningStorePass>
+		<TargetFramework>net8.0-android</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<DefaultLanguage>pt-br</DefaultLanguage>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+		<RunAOTCompilation>True</RunAOTCompilation>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+		<EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+		<WarningsAsErrors></WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+		<WarningsAsErrors></WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+		<WarningsAsErrors></WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+		<WarningsAsErrors></WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+		<WarningsAsErrors></WarningsAsErrors>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <AndroidUseAapt2>False</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
+	  <AndroidUseAapt2>False</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
+		<!-- Splash Screen -->
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AndroidResource Remove="StatitcData\**" />
+		<Compile Remove="StatitcData\**" />
+		<Content Remove="StatitcData\**" />
+		<EmbeddedResource Remove="StatitcData\**" />
+		<MauiXaml Remove="StatitcData\**" />
+		<None Remove="StatitcData\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="wwwroot\Index.js" />
+	  <Content Remove="wwwroot\Js\GetPublicacaoByAnalista.js" />
+	  <Content Remove="wwwroot\Js\GetPublicacaoByUser.js" />
+	  <Content Remove="wwwroot\Js\Index.js" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Pages\Formulario.razor.css" />
+		<None Remove="Pages\Avaliacoes.razor.css" />
+		<None Remove="Pages\ProvaDetails.razor.css" />
+		<None Remove="Resources\AppIcon\appicon.png" />
+		<None Remove="Resources\drawable\style_xaml.css" />
+		<None Remove="Resources\Fonts\fa-solid-900.ttf" />
+		<None Remove="Resources\Fonts\Font Awesome 6 Free-Solid-900.otf" />
+		<None Remove="Resources\Fonts\Kanit-Regular.ttf" />
+		<None Remove="Resources\Fonts\RobotoCondensed-Regular.ttf" />
+		<None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
+		<None Remove="Resources\Fonts\VivoTypeBold.otf" />
+		<None Remove="Resources\Fonts\VivoTypeLight.otf" />
+		<None Remove="Resources\Images\cardsjornada.png" />
+		<None Remove="Resources\Images\criandoprovas.jpg" />
+		<None Remove="Resources\Images\criandoprovasunica.jpg" />
+		<None Remove="Resources\Images\criandoquestoes.jpg" />
+		<None Remove="Resources\Images\criandoquestoes2.jpg" />
+		<None Remove="Resources\Images\criarusuario.jpg" />
+		<None Remove="Resources\Images\criarusuario2.jpg" />
+		<None Remove="Resources\Images\fazendoprova.jpg" />
+		<None Remove="Resources\Images\fazendoprova1.jpg" />
+		<None Remove="Resources\Images\forum.png" />
+		<None Remove="Resources\Images\gerenciadordeprovas.jpg" />
+		<None Remove="Resources\Images\gerenciamentousuario.jpg" />
+		<None Remove="Resources\Images\hierarquia.jpg" />
+		<None Remove="Resources\Images\linksjornada.png" />
+		<None Remove="Resources\Images\linksjornada2.png" />
+		<None Remove="Resources\Images\linksjornada3.png" />
+		<None Remove="Resources\Images\painelusuario.jpg" />
+		<None Remove="Resources\Images\resultadoprova.jpg" />
+		<None Remove="Resources\Images\Terra.gif" />
+		<None Remove="Resources\Splash\newsplash.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<MauiCss Include="Resources\drawable\style_xaml.css" />
+	</ItemGroup>
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\appicon.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<MauiSplashScreen Include="Resources\Splash\newsplash.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Pages\ProvaDetails.razor.css" />
+		<None Include="Pages\Avaliacoes.razor.css" />
+		<None Include="Pages\Formulario.razor.css" />
+		<None Include="Shared\MainLayoutVivoMais.razor" />
+		<None Include="Shared\MainLayoutVivoTask.razor" />
+		<None Include="Shared\NavMenuVivoMais.razor" />
+		<None Include="Shared\NavMenu.razor" />
+		<None Include="Shared\SurveyPrompt.razor" />
+		<None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+		<None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+		<None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+		<None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+		<None Include="wwwroot\css\open-iconic\README.md" />
+		<None Include="wwwroot\Index.js" />
+		<None Include="wwwroot\Js\GetPublicacaoByAnalista.js" />
+		<None Include="wwwroot\Js\GetPublicacaoByUser.js" />
+		<None Include="wwwroot\Js\Index.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.Cupertino" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.Fluent" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Brand" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.FontAwesome.Solid" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.Material" Version="4.0.0" />
+		<PackageReference Include="AathifMahir.Maui.MauiIcons.Material.Sharp" Version="4.0.0" />
+		<PackageReference Include="Blazor.Bootstrap" Version="3.1.0" />
+		<PackageReference Include="Blazored.TextEditor" Version="1.1.0" />
+		<PackageReference Include="Blazorise.Bootstrap" Version="1.6.2" />
+		<PackageReference Include="Blazorise.Charts" Version="1.6.2" />
+		<PackageReference Include="Blazorise.Components" Version="1.6.2" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.2" />
+		<PackageReference Include="Blazorise.LoadingIndicator" Version="1.6.2" />
+		<PackageReference Include="Blazorise.RichTextEdit" Version="1.6.2" />
+		<PackageReference Include="BlazorTransitionableRoute" Version="4.0.0" />
+		<PackageReference Include="Camera.MAUI" Version="1.5.1" />
+		<PackageReference Include="CardsView.Maui" Version="1.0.2" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
+		<PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
+		<PackageReference Include="DevExpress.Blazor.ProjectTemplates" Version="24.1.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
+		<PackageReference Include="FluentValidation" Version="11.10.0" />
+		<!--<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2849.39" />-->
+		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+		<PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.10.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.6" />
+		<PackageReference Include="Mopups" Version="1.3.2" />
+		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Radzen.Blazor" Version="5.4.0" />
+		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Pages\PainelForumGiroV.xaml.cs">
+		  <DependentUpon>PainelForumGiroV.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\ForumGiroV.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Links_Qualidade.xaml.cs">
+			<DependentUpon>Links_Qualidade.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\FlyoutFooterControl.xaml.cs">
+			<DependentUpon>FlyoutFooterControl.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Cards_Qualidade.xaml.cs">
+			<DependentUpon>Cards_Qualidade.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\JornadaXrotaCruzada.xaml.cs">
+			<DependentUpon>JornadaXrotaCruzada.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpUpdateApp.xaml.cs">
+			<DependentUpon>MopUpUpdateApp.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpSelectDate.xaml.cs">
+			<DependentUpon>MopUpSelectDate.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpDisplayPromptResetSenha.xaml.cs">
+			<DependentUpon>MopUpDisplayPromptResetSenha.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpShowImage.xaml.cs">
+			<DependentUpon>MopUpShowImage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpGenericUserInfo.xaml.cs">
+			<DependentUpon>MopUpGenericUserInfo.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\UpdateSenhaUser.xaml.cs">
+			<DependentUpon>UpdateSenhaUser.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\EditUser.xaml.cs">
+			<DependentUpon>EditUser.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Login.xaml.cs">
+			<DependentUpon>Login.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\Home.xaml.cs">
+			<DependentUpon>Home.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\ListaFormulariosXaml.xaml.cs">
+			<DependentUpon>ListaFormulariosXaml.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\CriarFormularioXaml.xaml.cs">
+			<DependentUpon>CriarFormularioXaml.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpDisplayPrompt.xaml.cs">
+			<DependentUpon>MopUpDisplayPrompt.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpWarningAlert.xaml.cs">
+			<DependentUpon>MopUpWarningAlert.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpSuccessAlert.xaml.cs">
+			<DependentUpon>MopUpSuccessAlert.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpAlert.xaml.cs">
+			<DependentUpon>MopUpAlert.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MopUpBusyIndicator.xaml.cs">
+			<DependentUpon>MopUpBusyIndicator.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\RegisterPage.xaml.cs">
+			<DependentUpon>RegisterPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\PopUpFormularioDetails.xaml.cs">
+			<DependentUpon>PopUpFormularioDetails.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\SelectPlataform.xaml.cs">
+			<DependentUpon>SelectPlataform.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\PopUpProvaDetails.xaml.cs">
+			<DependentUpon>PopUpProvaDetails.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Shared_Static_Class\Converters\TimerPlus.cs">
+			<SubType>Component</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiXaml Update="Pages\PainelForumGiroV.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\ForumGiroV.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Links_Qualidade.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\FlyoutFooterControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Cards_Qualidade.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\JornadaXrotaCruzada.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpUpdateApp.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpSelectDate.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpDisplayPromptResetSenha.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpShowImage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpGenericUserInfo.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\UpdateSenhaUser.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Home.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\ListaFormulariosXaml.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\CriarFormularioXaml.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\AvaliacoesXaml.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\FlyoutHeaderControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\EditUser.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Login.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpDisplayPrompt.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpWarningAlert.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpSuccessAlert.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpAlert.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpBusyIndicator.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\RegisterPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\MopUpUserInfo.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\PopUpFormularioDetails.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\PopUpProvaDetails.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\SelectPlataform.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Templates\ArtItemTemplate.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Templates\CardsPrincipaisHome.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties XamarinHotReloadDebuggerTimeoutExceptionVivo_TaskHideInfoBar="True" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+	<ItemGroup>
+		<None Update="Templates\CardsPrincipaisHome.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="Microsoft.Maui.Controls" Version="8.0.92">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.92" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Update="Shared_Static_Class\wwwroot\DropDownSubArea.json">
+			<CopyAlways>true</CopyAlways>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiImage Update="Resources\Images\forum.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </MauiImage>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Properties\PublishProfiles\" />
+	  <Folder Include="wwwroot\files\" />
+	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+</Project>

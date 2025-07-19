@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+@using Vivo_Task.ModelDTO;
+@using Vivo_Task.Models
+@inject PageHistoryState pagehistory
+@inject NavigationManager NavManager;
+
+<div class="page">
+    <div class="sidebar">
+        @if (Setting.UserBasicDetail != null)
+        {
+            <NavMenuVivoMais />
+        }
+    </div>
+    <main>
+        @*        @if (pagehistory.CanGoBack())
+            {
+                <div class="top-row px-4">
+                    <a @onclick="@GoBackPage">Go Back</a>
+                </div>
+            }*@
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+    @*@if (Setting.UserBasicDetail != null)
+        {
+            <NavMenuFooter />
+        }*@
+</div>
+<Preload />
+

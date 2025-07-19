@@ -1,0 +1,104 @@
+﻿@using Vivo_Task.Models
+@using Vivo_Task.ModelDTO
+@using Vivo_Task.Services
+@inject NavigationManager NavManager;
+@inject IAppService service;
+@using System.Globalization;
+@using Newtonsoft.Json;
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <div class="mb-2">
+            <a class="navbar-brand" href="">
+                @if (Setting.UserBasicDetail != null)
+                {
+                    <BlazorBootstrap.Button Outline=true Color="ButtonColor.Light">
+                        <BlazorBootstrap.Icon Name="IconName.Person" Class="rounded-circle"></BlazorBootstrap.Icon>
+                        Bem-vinde @textInfo.ToTitleCase(Setting.UserBasicDetail.Name.Split()[0].ToLower()) 😁
+                    </BlazorBootstrap.Button>
+                }
+            </a>
+        </div>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="() => collapseNavMenu = !collapseNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+
+<div class="@NavMenuCssClass">
+    <nav class="flex-column">
+        <div class="nav-item px-3" @onclick="() => collapseNavMenu = !collapseNavMenu">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        @*<div class="nav-item px-3" @onclick="() => collapseNavMenu = !collapseNavMenu">
+        <NavLink class="nav-link" href="ConsultarDemanda">
+        <span class="oi oi-box" aria-hidden="true"></span> Minhas Demandas
+        </NavLink>
+        </div>*@
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=> expandsubmenu = !expandsubmenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Rota
+            </NavLink>
+            @if (expandsubmenu)
+            {
+                <ul class="nav flex-column" @onclick="() => collapseNavMenu = !collapseNavMenu">
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="Formulario">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Meus Formulários
+                        </NavLink>
+                    </li>
+                    @*<li class="nav-item px-3">
+                <NavLink class="nav-link" href="Formulario">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Notas
+                </NavLink>
+                </li>*@
+                    @*@if (Setting.UserBasicDetail != null)
+                    {
+                        if ((int)Setting.UserBasicDetail.Role == 1
+                        || (int)Setting.UserBasicDetail.Role == 2)
+                        {
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="CriarFormulario">
+                                    <span class="oi oi-plus" aria-hidden="true"></span> Criar Formulario
+                                </NavLink>
+                            </li>
+                        }
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="Avaliacoes">
+                                <span class="oi oi-sort-descending" aria-hidden="true"></span> Avaliações
+                            </NavLink>
+                        </li>
+                    }*@
+                </ul>
+
+            }
+        </div>
+        @*<div class="nav-item px-3" @onclick="() => collapseNavMenu = !collapseNavMenu">
+        <NavLink class="nav-link" href="AbrirDemanda">
+        <span class="oi oi-plus" aria-hidden="true"></span> Abrir Demanda
+        </NavLink>
+        </div>*@
+        <div class="nav-item px-3" @onclick="() => collapseNavMenu = !collapseNavMenu">
+            <NavLink class="nav-link" href="#" @onclick="SignOut">
+                <span class="oi oi-account-logout" aria-hidden="true"></span> Sair
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandsubmenu;
+    private TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void SignOut()
+    {
+        SecureStorage.RemoveAll();
+        Setting.UserBasicDetail = null;
+        NavManager.NavigateTo("/login");
+    }
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Vivo_Task.Pages"
+             x:Class="Vivo_Task.Pages.MopUpDisplayPromptResetSenha"
+             Color="Transparent"
+             CanBeDismissedByTappingOutsideOfPopup="False"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+    <Border  Stroke="#ffffff" BackgroundColor="MediumSlateBlue" StrokeThickness="2" >
+        <Border.StrokeShape >
+            <RoundRectangle CornerRadius="8" />
+        </Border.StrokeShape>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" 
+            Padding="10" WidthRequest="350" HeightRequest="300">
+            <Grid RowDefinitions="Auto,Auto,Auto,100,50" ColumnDefinitions="*" RowSpacing="10" >
+                <Label VerticalOptions="Center" HorizontalOptions="Center" 
+                   Grid.Row="0" Grid.Column="0" FontSize="20" 
+                   FontAutoScalingEnabled="True" FontFamily="Vivo-font-bold" FontAttributes="Bold"
+                   x:Name="TitleMessage" Text="ALTERAÇÃO DE SENHA" TextColor="White"  HorizontalTextAlignment="Center">
+                </Label>
+                <Label VerticalOptions="Center" HorizontalOptions="Center" 
+                   Grid.Row="1" Grid.Column="0" TextColor="White" FontSize="15" 
+                   FontAutoScalingEnabled="True" FontFamily="Vivo-font-bold"
+                   x:Name="Message"  HorizontalTextAlignment="Center">
+                </Label>
+                <Border Grid.Row="2" BackgroundColor="White" HeightRequest="45" Padding="0">
+                    <Border.StrokeShape >
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <StackLayout  >
+                        <Entry Placeholder="Nova senha" 
+                                IsPassword="True"
+                            Margin="0"
+                                x:Name="NovaSenha"
+                            HorizontalTextAlignment="Center"
+                            IsSpellCheckEnabled="false"
+                            FontFamily="Vivo-font-bold"
+                            BackgroundColor="Transparent"
+                            FontAttributes="None"
+                            FontSize="20"
+                            TextColor="Black"
+                                PlaceholderColor="LightGrey"
+                            FontAutoScalingEnabled="True">
+                        </Entry>
+                    </StackLayout>
+                </Border>
+                <Border Grid.Row="3" BackgroundColor="White" HeightRequest="45" Padding="0">
+                    <Border.StrokeShape >
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <StackLayout >
+                        <Entry Placeholder="Confirmar senha" 
+                       IsPassword="True"
+                       x:Name="ConfirmarSenha"
+                   Margin="0"
+                   HorizontalTextAlignment="Center"
+                   IsSpellCheckEnabled="false"
+                   FontFamily="Vivo-font-bold"
+                   BackgroundColor="Transparent"
+                       FontAttributes="None"
+                   FontSize="20"
+                   TextColor="Black"
+                       PlaceholderColor="LightGrey"
+                   FontAutoScalingEnabled="True">
+                        </Entry>
+                    </StackLayout>
+                </Border>
+                <HorizontalStackLayout Grid.Row="4" Grid.Column="0" HorizontalOptions="CenterAndExpand" 
+                                   VerticalOptions="CenterAndExpand" Spacing="5">
+                    <Button HorizontalOptions="Start" BackgroundColor="White" WidthRequest="60"
+                    TextColor="MediumSlateBlue" FontSize="Medium" FontFamily="Vivo-font-bold"
+                   Text="Ok" Clicked="Button_Clicked" >
+                    </Button>
+                    <Button HorizontalOptions="End" BackgroundColor="White" WidthRequest="120"
+                   Grid.Row="2" Grid.Column="0" TextColor="MediumSlateBlue" FontSize="Medium" FontFamily="Vivo-font-bold"
+                   Text="Cancelar" Clicked="Cancel_Clicked" >
+                    </Button>
+                </HorizontalStackLayout>
+            </Grid>
+        </StackLayout>
+    </Border>
+</mopups:Popup>

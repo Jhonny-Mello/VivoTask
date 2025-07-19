@@ -1,0 +1,817 @@
+﻿@page "/formulario/{ID_PROVA:int}/{Caderno:int}/{TIPO_FORMS}/{CARGO}/{FIXA}"
+
+@using System.ComponentModel
+@using Blazorise;
+@using Vivo_Task.ModelDTO;
+@using Vivo_Task.Models
+@using Vivo_Task.Pages
+@using Vivo_Task.ViewModels
+@using Vivo_Task.Shared_Static_Class.Converters;
+@using Vivo_Task.Shared_Static_Class.Data;
+@using CommunityToolkit.Maui.Views
+@using Vivo_Task.Templates
+@using System.Globalization
+@using Color = Blazorise.Color;
+@using DividerType = Blazorise.DividerType
+@using IconName = Blazorise.IconName
+@using IconSize = BlazorBootstrap.IconSize
+@using Modal = BlazorBootstrap.Modal
+@using Offcanvas = BlazorBootstrap.Offcanvas
+@using Placement = BlazorBootstrap.Placement
+@* @using Size = BlazorBootstrap.Size
+ *@@using TextAlignment = Blazorise.TextAlignment
+@using TextColor = Blazorise.TextColor
+@implements IDisposable
+@inject IAnswerFormViewModel service;
+<PageTitle> Prova - Rota x Jornada </PageTitle>
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" ConfirmExternalNavigation="false" />
+<style>
+
+    .plus-button-header [aria-controls="rz-fieldset-0-content"]:first-child {
+        background-color: transparent;
+        border-radius: 20px;
+        border-color: white;
+        padding: 10px;
+        color: transparent !important;
+        border: solid 2.5px;
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+    }
+
+    .plus-button-header [class="rz-fieldset-legend"]:first-child {
+        white-space: nowrap !important;
+        width: 100% !important;
+        background: transparent !important;
+        color: transparent !important;
+    }
+
+    .plus-button-header .rz-fieldset-toggler:first-of-type:first-child {
+        font-size: 18px;
+        color: #893AAF !important;
+        /*        padding: 8px;
+                            margin: -61px 4px 46px 0px;*/
+    }
+
+    .plus-button-body [aria-controls="rz-fieldset-0-content"]:first-child {
+        background-color: white;
+        border: none !important;
+        padding: 10px;
+        color: black !important;
+        border: solid 2px;
+    }
+
+    .plus-button-body .rz-fieldset-toggler:first-of-type:first-child {
+        font-size: 18px;
+        color: black !important;
+        /*        padding: 8px;
+                            margin: -61px 4px 46px 0px;*/
+    }
+
+    .true-false {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rz-g {
+        display: unset !important;
+    }
+
+        .rz-g > div {
+            border: none;
+        }
+
+    fieldset {
+        background-color: #ffffff;
+        border-color: lightgray;
+        -webkit-box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 3px 3px 5px 3px rgba(0, 0, 0, 0.19) !important;
+        border-radius: 10px !important;
+    }
+
+    .modal-header {
+        justify-content: center !important;
+    }
+
+        .modal-header > h5 {
+            font-weight: bold !important;
+        }
+
+    .modal-body {
+        padding: 6% !important;
+    }
+
+    /* .modal-content{
+            align-items: center!important;
+        } */
+
+    .modal-content {
+        border-radius: 12px !important;
+    }
+
+
+    .modal-header {
+        background: #893AAF !important;
+        color: white !important;
+        width: 100% !important;
+        align-items: center;
+        border-radius: 10px !important;
+    }
+
+    .TransitionRemove {
+        transition: opacity 0.5s ease;
+        opacity: 0;
+    }
+
+    .TransitionAdd {
+        transition: opacity 0.5s ease;
+        opacity: 1;
+    }
+
+</style>
+<div class="@loading"></div>
+@if (!service.IsBusy)
+{
+    @if (service.RespostaFormulario.QUESTIONS == null && !Finalizado)
+    {
+        <div class="text-center mt-2">
+            <span class="@_spinnerClass" aria-hidden="true"></span>
+            <p>
+                <em>Carregando Formulário...</em>
+            </p>
+        </div>
+    }
+    else if (service.RespostaFormulario.QUESTIONS.Count() == 0 && !Finalizado)
+    {
+        <BlazorBootstrap.Alert Color="AlertColor.Danger" Class="card">
+            <div class="text-center mt-2" style="margin:0;">
+                <p>
+                    <em>Não conseguimos encontrar nenhuma pergunta para este fomulário, por favor tente novamente.</em>
+                </p>
+            </div>
+        </BlazorBootstrap.Alert>
+    }
+    else
+    {
+        <Blazorise.Steps @ref="stepsRef" @bind-SelectedStep="selectedStep" NavigationAllowed="NavigationAllowed" VerticalAlignment="Blazorise.VerticalAlignment.TextBottom">
+            <Items>
+                <Blazorise.Step Name="Inicio" Index="1" Color="Blazorise.Color.Success" Class="stepPainal">
+                    <Marker>
+                        @* <Blazorise.Icon Name="IconName.Walking" /> *@
+                        @((MarkupString)@"
+                <style>
+                .step-circle:before{
+                display:none !important;
+                }
+
+                .step-active .step-circle{
+                background-color: #893AAF!important;
+                border-color: transparent!important;
+                }
+                .step-active .step-text{
+                color: #141313!important;
+                }
+
+                .step-active .step-text .bi-flag-fill{
+                font-size:5px!important;
+                }
+
+                .step-success .step-circle {
+                color: #28a745;
+                border-color: transparent;
+                }
+
+                .step-danger .step-circle {
+                color: #cb2166 !important;
+                border-color: transparent;
+                }
+
+                .step-success .step-circle:target,
+                .step-success .step-circle:hover,
+                .step-success .step-circle:active {
+                transform: scale(1.2) !important;
+                -webkit-transition: all 0.3s ease !important;
+                transition: all 0.1s ease !important;
+                }
+
+                .step-danger .step-circle:target,
+                .step-danger .step-circle:hover,
+                .step-danger .step-circle:active {
+                transform: scale(1.2) !important;
+                -webkit-transition: all 0.3s ease !important;
+                transition: all 0.1s ease !important;
+                }
+                </style>
+                ")
+
+                        <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.FlagFill" Style="font-size: 15px;" />
+
+                    </Marker>
+                    @*  <Caption>
+            Inicio
+            </Caption> *@
+                </Blazorise.Step>
+                @foreach (var item in service.RespostaFormulario.QUESTIONS.Select((x, i) => new { Value = x, Index = i }))
+                {
+                    if (stepsRef.SelectedStep == (item.Index + 1).ToString())
+                    {
+                        <Step Name="@((item.Index + 1).ToString())" Class="stepPainal">
+                            <Marker>
+                                <Blazorise.Icon Name="IconName.Walking" />
+                            </Marker>
+                            <Caption>
+                                @(item.Index + 1)
+                            </Caption>
+                        </Step>
+                    }
+                    else if (item.Value.RESPOSTA is not null)
+                    {
+                        <Step Name="@((item.Index + 1).ToString())" Class="stepPainal">
+                            <Marker>
+                                <Blazorise.Icon Name="IconName.CheckCircle" />
+                            </Marker>
+                            <Caption>
+                                @(item.Index + 1)
+                            </Caption>
+                        </Step>
+                    }
+                    else
+                    {
+                        <Step Name="@((item.Index + 1).ToString())" Class="stepPainal">
+                            <Marker>
+                            </Marker>
+                            <Caption>
+                                @(item.Index + 1)
+                            </Caption>
+                        </Step>
+                    }
+                }
+
+                @if (service.RespostaFormulario.QUESTIONS.Any(x => x.RESPOSTA is null))
+                {
+                    <Step Name="Fim" Color="Color.Danger" Class="stepPainal">
+                        <Marker>
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.FlagFill" Style="font-size: 15px;" />
+                        </Marker>
+                        @* <Caption>
+            Fim
+            </Caption> *@
+                    </Step>
+                }
+                else
+                {
+                    <Step Name="Fim" Color="Color.Success" Class="stepPainal">
+                        <Marker>
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.FlagFill" Style="font-size: 15px;" />
+                        </Marker>
+                        @* <Caption>
+            Fim
+            </Caption> *@
+                    </Step>
+                }
+            </Items>
+
+            <Content>
+
+                @* !!!!!!!!!!!!! STEP INCIAL !!!!!!!!!!!!!!!! *@
+
+                <Blazorise.StepPanel Name="Inicio">
+
+
+                    <Blazorise.Card Style="width:100%;border: none!important;">
+                        <Blazorise.CardHeader Style="background: #893AAF!important; color:white; display:flex; justify-content:center; align-items:center;border-radius: 15px;">
+                            <p style="color:white; font-weight:bold; margin:0px!important; padding:1%!important; font-size:15px!important">
+                                @(TIPO_FORMS == "Jornada" || TIPO_FORMS == "Jornada Gestor" ? "USUÁRIO" : "IDENTIFICAÇÃO DO AVALIADO")
+                            </p>
+                        </Blazorise.CardHeader>
+                        <Blazorise.CardBody>
+
+                            <FluentGrid Spacing="3" Justify="Microsoft.FluentUI.AspNetCore.Components.JustifyContent.Center" Style="align-items: center;min-height: 230px;justify-content: center; display: flex; margin-bottom: 3%; margin-top: 3%;">
+
+
+                                @if (TIPO_FORMS == "Jornada" || TIPO_FORMS == "Jornada Gestor") // Se for Jornada campos de identificação já vem automático
+                                {
+                                    service.RespostaFormulario.PDV_AVALIADO = Setting.UserBasicDetail.Pdv;
+                                    service.RespostaFormulario.RE_AVALIADO = Setting.UserBasicDetail.Matricula;
+                                    service.RespostaFormulario.REDE_AVALIADA = "NULL";
+                                    service.RespostaFormulario.DDD_AVALIADO = "NULL";
+
+
+                                    <FluentGridItem xs="12" sm="4">
+
+
+                                        <div style="text-align:center; font-weight:bold;" class="list-group-item divCI">
+                                            <div class="TitleCI">Nome</div>
+                                            @(textInfo.ToTitleCase(Setting.UserBasicDetail.Name.Split()[0].ToLower()
+                                                + " " +
+                                                Setting.UserBasicDetail.Name.Split()[1].ToLower()))
+                                        </div>
+
+
+                                    </FluentGridItem>
+
+                                    <FluentGridItem xs="12" sm="4">
+
+                                        <div style="text-align:center;font-weight:bold;" class="list-group-item divCI">
+                                            <div class="TitleCI">MATRÍCULA</div>
+                                            @Setting.UserBasicDetail.Matricula
+                                        </div>
+
+                                    </FluentGridItem>
+
+                                    <FluentGridItem xs="12" sm="4">
+
+
+                                        <div style="text-align:center;font-weight:bold;" class="list-group-item divCI">
+                                            <div class="TitleCI">CARGO</div>
+                                            @Setting.UserBasicDetail.Cargo
+                                        </div>
+
+                                    </FluentGridItem>
+
+                                }
+                                else
+                                {
+                                    <FluentGridItem xs="12" sm="6">
+
+                                        <div class="list-group-item divCI">
+                                            <div class="TitleCI">MATRÍCULA</div>
+                                            <input placeholder="" @onchange="args => service.RespostaFormulario.RE_AVALIADO = int.Parse(args.Value.ToString())" class="form-control inputCI" />
+                                        </div>
+                                    </FluentGridItem>
+
+
+                                    @if ((Cargos)int.Parse(CARGO) != Cargos.Gerente_Área)
+                                    {
+                                        <FluentGridItem xs="12" sm="6">
+
+                                            <div class="list-group-item divCI">
+                                                <div class="TitleCI">REDE</div>
+                                                <Blazorise.Select Style="text-align:center!important" TValue="string" SelectedValueChanged="args => REDEChanged(args)" Width="Width.Is100">
+                                                    <Blazorise.SelectItem Value="@("")"></Blazorise.SelectItem>
+                                                    @foreach (var item in service.CARTEIRA.Select(x => x.REDE).Distinct())
+                                                    {
+                                                        <Blazorise.SelectItem Value="@item">@item</Blazorise.SelectItem>
+                                                    }
+                                                </Blazorise.Select>
+                                            </div>
+                                        </FluentGridItem>
+
+                                    }
+                                    else
+                                    {
+                                        service.RespostaFormulario.REDE_AVALIADA = "VIVO123-456";
+                                    }
+
+                                    <FluentGridItem xs="12" sm="6">
+
+                                        <div class="list-group-item divCI">
+                                            <div class="TitleCI">DDD</div>
+                                            <Blazorise.Select Style="text-align:center!important" TValue="string" @bind-SelectedValue="service.RespostaFormulario.DDD_AVALIADO" Width="Width.Is100">
+                                                @if (!string.IsNullOrEmpty(service.RespostaFormulario.REDE_AVALIADA))
+                                                {
+                                                    <option value="" disabled="disabled" selected="selected"></option>
+                                                    @if ((Cargos)int.Parse(CARGO) != Cargos.Gerente_Área)
+                                                    {
+                                                        @foreach (var item in service.CARTEIRA.Where(x => x.REDE == service.RespostaFormulario.REDE_AVALIADA)
+                                                       .Select(x => x.DDD)
+                                                       .Distinct())
+                                                        {
+                                                            <Blazorise.SelectItem Value="@item">@item</Blazorise.SelectItem>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <Blazorise.SelectItem Value="71">71</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="72">72</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="73">73</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="74">74</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="75">75</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="76">76</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="77">77</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="78">78</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="79">79</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="80">80</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="81">81</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="82">82</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="83">83</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="84">84</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="85">85</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="86">86</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="87">87</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="88">88</Blazorise.SelectItem>
+                                                        <Blazorise.SelectItem Value="89">89</Blazorise.SelectItem>
+                                                    }
+                                                }
+                                            </Blazorise.Select>
+                                        </div>
+                                    </FluentGridItem>
+
+                                    @if ((Cargos)int.Parse(CARGO) != Cargos.Gerente_Área)
+                                    {
+                                        <FluentGridItem xs="12" sm="6">
+
+                                            <div class="list-group-item divCI">
+                                                <div class="TitleCI">PDV</div>
+                                                <Blazorise.Select Style="text-align:center!important" TValue="string" @bind-SelectedValue="service.RespostaFormulario.PDV_AVALIADO" Width="Width.Is100">
+                                                    @if (!string.IsNullOrEmpty(service.RespostaFormulario.REDE_AVALIADA) && !string.IsNullOrEmpty(service.RespostaFormulario.DDD_AVALIADO))
+                                                    {
+                                                        <option value="" disabled="disabled" selected="selected">Selecione</option>
+                                                        foreach (var item in service.CARTEIRA.Where(x => x.REDE == service.RespostaFormulario.REDE_AVALIADA
+                                                        && x.DDD == int.Parse(service.RespostaFormulario.DDD_AVALIADO))
+                                                        .Select(x => x.ADABAS).Distinct())
+                                                        {
+                                                            <Blazorise.SelectItem Value="@item">@item</Blazorise.SelectItem>
+                                                        }
+                                                    }
+                                                </Blazorise.Select>
+                                            </div>
+                                        </FluentGridItem>
+
+                                    }
+                                    else
+                                    {
+                                        service.RespostaFormulario.PDV_AVALIADO = "VIVO123-456";
+                                    }
+                                }
+
+                            </FluentGrid>
+
+                        </Blazorise.CardBody>
+                    </Blazorise.Card>
+
+                    <Blazorise.Div Display="Display.Flex" Class="justify-content-end footerProva" Style="width: 80%!important;">
+                        <BlazorBootstrap.Button Class="button-icon" Color="ButtonColor.Primary" @onclick="() => stepsRef.SelectStep(1.ToString())" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowRight" Size="IconSize.x3" />
+                        </BlazorBootstrap.Button>
+                    </Blazorise.Div>
+                </Blazorise.StepPanel>
+
+                @* !!!!!!!! STEP DO PAINEL COM AS PERGUNTAS !!!!!!!! *@
+
+                @foreach (var item in service.RespostaFormulario.QUESTIONS.Select((x, i) => new { Value = x, Index = i }))
+                {
+                    @((MarkupString)@"
+        <style>
+        .active{
+        justify-content: center!important;
+        display: flex!important;
+        flex-direction: column !important;
+        align-items: center !important;
+        }
+        </style>")
+
+                    <Blazorise.StepPanel Name="@((item.Index + 1).ToString())" Style="">
+                        <Div Style="width:85%!important;">
+                            <Blazorise.Card Style="border-radius: 20px; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                <Blazorise.CardHeader TextAlignment="TextAlignment.Start" Style="font-size:20px; background:#893AAF; border-radius: 20px 20px 0px 0px; display:flex!important; justify-content:center!important">
+                                    <Div Flex="Flex.InlineFlex.JustifyContent.Between" Width="Width.Is100" Style="width:90%!important">
+                                        <div style="color:white;font-weight:bold; font-size:13px; display:flex; align-items:end;" >
+                                            <span class="typeQuestion">
+                                                @(item.Value.TP_QUESTAO)
+                                            </span>
+                                        </div>
+                                        <div style="font-weight:bold; color:white;display: flex; flex-direction:column;">
+
+                                            <span style="font-size:23px" class="NumberQuestion">Questão @(item.Index + 1)</span>
+
+                                            <span style="font-size:15px;display: flex; align-items: center;justify-content: center;padding-top: 5%;"  class="idQuestion">
+                                                @item.Value.ID_QUESTION
+                                                </span>
+
+                                        </div>
+                                        <div style="font-weight:bold; font-size:15px; color:white; display: flex; flex-direction:column;justify-content: end;">
+                                            <span style="display:flex;justify-content:center"  class="temasQuestion">@item.Value.TEMA.FirstOrDefault().TEMAS</span>
+
+                                            <span style="font-size:12px; padding-top:2%!important"  class="subQuestion"> @(item.Value.TEMA.Where(x => x.ID_SUB_TEMAS == item.Value.SUB_TEMA).FirstOrDefault().SUB_TEMAS)</span>
+                                        </div>
+                                    </Div>
+                                </Blazorise.CardHeader>
+                                <Blazorise.CardBody TextAlignment="TextAlignment.Center">
+                                    @* <Blazorise.CardTitle>
+                        <span style="font-weight:bold; font-size:18px;">
+                        @(item.Value.TEMA.Where(x => x.ID_SUB_TEMAS == item.Value.SUB_TEMA).FirstOrDefault().SUB_TEMAS)
+                        </span>
+                        </Blazorise.CardTitle> *@
+                                    <span style="font-size:16px;">@(item.Value.PERGUNTA)</span>
+                                </Blazorise.CardBody>
+                            </Blazorise.Card>
+
+                            <FluentGrid Spacing="3" Justify="Microsoft.FluentUI.AspNetCore.Components.JustifyContent.Center" Style="align-items: center;min-height: 230px;justify-content: center; display: flex; margin-bottom: 3%; margin-top: 3%;">
+
+                                @if (item.Value.TP_QUESTAO == "ÚNICA ALTERNATIVA")
+                                {
+                                    @*  <Blazorise.Divider DividerType="DividerType.TextContent" Text="Alternativas" /> *@
+                                    @foreach (var item_AL in item.Value.ALTERNATIVAS)
+                                    {
+
+
+                                        if (item_AL.ALTERNATIVA != "NULL")
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="height: ">
+
+                                                <div class="@item_AL.Class" @onclick="() => OnAlternativaClicked(item.Value, item_AL)" style="border-radius: 10px;padding: 7%; height: 85%; display:flex; justify-content:center; align-content:center">
+                                                    <span style="display: flex;font-size: 90%; align-items: center;justify-content: center;">
+                                                        @*  <Check @bind-Checked="item_AL.RESPOSTA_ESCOLHIDA" Disabled="true" Margin="Margin.Is2"></Check> *@
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+
+                                            <br />
+                                        }
+
+                                    }
+                                }
+                                else if (item.Value.TP_QUESTAO == "MULTIPLA ESCOLHA")
+                                {
+                                    @* <Blazorise.Divider DividerType="DividerType.TextContent" Text="Alternativas" /> *@
+                                    foreach (var item_AL in item.Value.ALTERNATIVAS)
+                                    {
+                                        if (item_AL.ALTERNATIVA != "NULL")
+                                        {
+                                            <FluentGridItem xs="12" sm="4">
+                                                <div class="@item_AL.Class" @onclick="() => item_AL.RESPOSTA_ESCOLHIDA = !item_AL.RESPOSTA_ESCOLHIDA" style="border-radius: 10px;padding: 7%; height: 85%; display:flex; justify-content:center; align-content:center">
+                                                    <span style="display: flex;font-size: 90%; align-items: center;justify-content: center;">
+                                                        @* <Check @bind-Checked="item_AL.RESPOSTA_ESCOLHIDA" Disabled="true" Margin="Margin.Is2"></Check> *@
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+                                            <br />
+                                        }
+                                    }
+                                }
+                                else if (item.Value.TP_QUESTAO == "VERDADEIRO/FALSO")
+                                {
+                                    <br />
+                                    <br />
+                                    @* <div class="true-false"> *@
+                                    @foreach (var item_AL in item.Value.ALTERNATIVAS)
+                                    {
+                                        <FluentGridItem xs="12" sm="6" Style="justify-content: center;display: flex;">
+                                            @if (item_AL.ALTERNATIVA == "VERDADEIRO")
+                                            {
+
+                                                <div class="@(item_AL.RESPOSTA_ESCOLHIDA ? "list-group-item selected-form" : "list-group-item")"
+                                                     @onclick="() => OnAlternativaClicked(item.Value, item_AL)" style="border-radius: 10px;padding: 7%;width: 90%;">
+                                                    <span>
+                                                        <Blazorise.Icon Name="IconName.CheckCircle" TextColor="TextColor.Success" IconSize="Blazorise.IconSize.x2">
+                                                        </Blazorise.Icon>
+                                                        <label style="color:#00C714; font-weight: bold;">VERDADEIRO</label>
+                                                    </span>
+                                                </div>
+
+                                            }
+                                            else if (item_AL.ALTERNATIVA == "FALSO")
+                                            {
+                                                <div class="@(item_AL.RESPOSTA_ESCOLHIDA ? "list-group-item selected-form" : "list-group-item")"
+                                                     @onclick="() => OnAlternativaClicked(item.Value, item_AL)" style="border-radius: 10px;padding: 7%;width: 90%;">
+                                                    <span>
+                                                        <Blazorise.Icon Name="IconName.TimesCircle" TextColor="TextColor.Danger" IconSize="Blazorise.IconSize.x2">
+                                                        </Blazorise.Icon>
+                                                        <label style="color:#FF0000; font-weight: bold;">FALSO</label>
+                                                    </span>
+                                                </div>
+                                            }
+                                        </FluentGridItem>
+                                    }
+                                    @*  </div> *@
+                                }
+
+                            </FluentGrid>
+
+                            @* !!!!!!! footer do formulário durante a realização da prova !!!!! *@
+
+                            <Blazorise.Div Display="Display.Flex" Class="footer-form footerProva" Flex="Flex.JustifyContent.Between" Style="justify-content: space-evenly; display: flex ; ">
+                                @if (item.Index == 0)
+                                {
+                                    <BlazorBootstrap.Button Class="button-icon " Color="ButtonColor.Primary" @onclick="@(async () => await stepsRef.SelectStep("Inicio"))" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                        <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowLeft" Size="IconSize.x3" />
+                                    </BlazorBootstrap.Button>
+                                }
+                                else
+                                {
+                                    <BlazorBootstrap.Button Class="button-icon " Color="ButtonColor.Primary" @onclick="() => stepsRef.SelectStep(item.Index.ToString())" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                        <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowLeft" Size="IconSize.x3" />
+                                    </BlazorBootstrap.Button>
+                                }
+
+                                @*  <h4 style="color:grey; color: white; padding: 0.7%; border-radius: 15px; background: #893AAF; display: flex; align-items: center; justify-content: center; margin: 0 !important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                    @item.Value.ID_QUESTION
+                    </h4> *@
+
+                                @if (item.Index == service.RespostaFormulario.QUESTIONS.Count() - 1)
+                                {
+                                    <BlazorBootstrap.Button Class="button-icon " Color="ButtonColor.Primary" @onclick="@(async () => await stepsRef.SelectStep("Fim"))" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                        <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowRight" Size="IconSize.x3" />
+                                    </BlazorBootstrap.Button>
+                                }
+                                else
+                                {
+                                    <BlazorBootstrap.Button Class="button-icon " Color="ButtonColor.Primary" @onclick="() => stepsRef.SelectStep((item.Index + 2).ToString())" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                        <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowRight" Size="IconSize.x3" />
+                                    </BlazorBootstrap.Button>
+                                }
+                            </Blazorise.Div>
+                        </Div>
+                    </Blazorise.StepPanel>
+                }
+
+
+
+                <Blazorise.StepPanel Name="Fim">
+                    <Blazorise.Card Style="width:100%!important;border: none!important;">
+
+                        <Blazorise.CardHeader Style="background: #893AAF!important; color:white; display:flex; justify-content:center; align-items:center;border-radius: 15px;">
+                            <p style="color:white; font-weight:bold; margin:0px!important; padding:1%!important; font-size:15px!important">
+                                REVISÃO
+                            </p>
+                        </Blazorise.CardHeader>
+
+                        @* @for (var i = 0; i < service.RespostaFormulario.QUESTIONS.Count(); i++) //Looping por todas as questões
+                {
+                <div class="list-group-item">
+                <span>
+                <b>@($"{i + 1} - {service.RespostaFormulario.QUESTIONS[i].PERGUNTA}")</b>
+                </span>
+                <Blazorise.Divider DividerType="DividerType.Solid" />
+                <span>
+                @if (service.RespostaFormulario.QUESTIONS[i].RESPOSTA is not null)
+                {
+                foreach (var item in service.RespostaFormulario.QUESTIONS[i].RESPOSTA) //Looping por todas as ALTERNATIVAS SELECIONADAS
+                {
+                <p>@item.ALTERNATIVA</p>
+                }
+                }
+                </span>
+                </div>
+                <br />
+                }*@
+
+                        <FluentGrid Spacing="3" Justify="Microsoft.FluentUI.AspNetCore.Components.JustifyContent.Center" Style="align-items: center;min-height: 330px;justify-content: center; display: flex; margin-bottom: 3%; margin-top: 3%; padding: 2%;">
+
+                            @foreach (var item in service.RespostaFormulario.QUESTIONS.Select((x, y) => new { Value = x, Index = y })) //Looping por todas as questões
+                            {
+                                <FluentGridItem xs="12" sm="12" Style="padding:3%!important; display: flex; justify-content: center; align-items: center;">
+
+                                    <RadzenFieldset AllowCollapse="true" Collapsed="true" Style="width: 90%!important" class="plus-button-header" id="@($"{item.Index}fieldset")" @onclick="async ()=> await TopFieldSet(item.Index)">
+                                        <HeaderTemplate> 
+                                            <span class="d-inline-flex align-items-center align-middle" style="width: 100%!important;display: flex !important;justify-content: space-between!important;">
+                                                <div style="color: #893AAF; Padding: 2% 4% 2% 4%;border-radius: 15px;background: white;border: solid;">
+                                                                <b>Questão - @($"{item.Index + 1}")</b>
+                                                             <span class="spanDados">
+                                                                                 <p class="innerDados" style="margin: 0px!important;color: #433f3f!important; font-weight: bold!important;">@item.Value.ID_QUESTION</p>
+                                                                             </span class="spanDados">
+                                                    </div>
+                                                
+                                                <Div Class="subTemaReview" Style="display: flex;margin: 12px 20% 5px 10px;background: rgb(255, 255, 255);color: rgb(228, 61, 129);font-weight: bold;border-radius: 15px;padding: 9px;position: absolute;transform: translateY(68%);right: 0%;font-size: 14px;" id="@{item.Index}"> @($"{item.Value.TEMA.Where(x => x.ID_SUB_TEMAS == item.Value.SUB_TEMA).FirstOrDefault().SUB_TEMAS}") </Div>
+                                            </span>
+                                        </HeaderTemplate>
+                                        <ChildContent>
+
+                                           @*   await JSRuntime.InvokeVoidAsync("UpdatePontuacao"); *@
+
+                                                <FluentGrid Spacing="3" Justify="Microsoft.FluentUI.AspNetCore.Components.JustifyContent.Center" Style="border-radius:10px!important; padding: 0% 1% 1% 2%;">
+
+                                                    <FluentGridItem xs="12" sm="9" Style="display:flex; justify-content:center;">
+
+                                                      
+
+                                                        <div style="padding: 1% 0% 0% 0%!important; display: flex;flex-direction: column;justify-content: space-around;">
+
+                                                              <div style="color: #893AAF;font-weight: bold; padding: 0% 0% 4% 0%; display: flex;">
+                                                            Pergunta:
+                                                        </div>
+
+                                                            <div>
+                                                                <div style="color:#565656;">@($"{item.Index + 1} - {item.Value.PERGUNTA}")</div>
+                                                               
+                                                            </div>
+                                                           @*  <Blazorise.Divider DividerType="DividerType.Solid" /> *@
+                                                        <div style="color: #893AAF;font-weight: bold; padding: 4% 0% 4% 0%; display: flex;">
+                                                            Alternativa Escolhida:
+                                                        </div>
+                                                            <div style="display: flex; justify-content:center">
+                                                                @if (item.Value.RESPOSTA is not null)
+                                                                {
+                                                                    foreach (var item in item.Value.RESPOSTA) //Looping por todas as ALTERNATIVAS SELECIONADAS
+                                                                    {
+                                                                        <div style="padding: 2%;border: solid;border-radius: 10px;border-width: 1px;border-color: #893AAF; min-width: 120px; display: flex;justify-content: center; color: #565656;">@item.ALTERNATIVA</div>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </FluentGridItem>
+
+                                                <FluentGridItem xs="12" sm="3" Style=" display:flex; justify-content:center;">
+                                                    <div style="display:inline-flex; flex-direction: column;border: solid;border-color: #893AAF;padding: 6%;border-radius: 10px;border-width: 1px !important;text-align: center;justify-content: space-evenly;align-items: center; width:100%">
+                                                            <div style="color:#893AAF; font-weight: bold; font-size: 13px; padding-bottom:10%; min-width: 95px;">DADOS DA QUESTÃO</div>
+                                                            <div class="d-inline-flex justify-content-between p-2 w-100">
+                                                            <span class="spanDados" >
+                                                                Tema:
+                                                                <p class="innerDados">@item.Value.TEMA.FirstOrDefault().TEMAS</p>
+                                                            </span>
+
+                                                            <span class="spanDados">
+                                                                Subtema:
+                                                                <p class="innerDados">@(item.Value.TEMA.Where(x => x.ID_SUB_TEMAS == item.Value.SUB_TEMA).FirstOrDefault().SUB_TEMAS)</p>
+                                                            </span>
+                                                        </div>
+                                                        </div>
+                                                    </FluentGridItem>
+
+                                                </FluentGrid>
+                                          
+                                            
+
+                                        </ChildContent>
+                                    </RadzenFieldset>
+
+                                </FluentGridItem>
+                            }
+                        </FluentGrid>
+
+                    </Blazorise.Card>
+                    <Blazorise.Div Display="Display.Flex" Class="justify-content-between footerProva" Style="width: 80%!important; ">
+                        <BlazorBootstrap.Button Class="button-icon" @onclick="() => stepsRef.SelectStep(service.RespostaFormulario.QUESTIONS.Count().ToString())" Disabled="Finalizado" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; border-color:none !important;">
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowLeft" Size="IconSize.x4" />
+                        </BlazorBootstrap.Button>
+                        <BlazorBootstrap.Button Class="button-icon" @onclick="() => modal.ShowAsync()" Outline="true" Size="BlazorBootstrap.ButtonSize.Small" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%; border-color:transparent!important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;; border-color:none !important;">
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.SendExclamationFill" Size="IconSize.x4" Style="color:white!important;" />
+                        </BlazorBootstrap.Button>
+                    </Blazorise.Div>      
+                    
+                </Blazorise.StepPanel>
+            </Content>
+        </Blazorise.Steps>
+    }
+}
+
+<BlazorBootstrap.Modal @ref="modal" Title="Aviso !" IsVerticallyCentered="true" UseStaticBackdrop="true" ShowCloseButton="false" Style="justify-content: center!important;">
+    <BodyTemplate>
+        
+        <div style="justify-content: center; display: flex;">Você tem certeza que deseja enviar essa avaliação ?</div>
+
+    </BodyTemplate>
+
+    <FooterTemplate>
+        <Div Style="display: flex; justify-content: center; width: 100%;">
+            <button class="officialButton" style="margin: 1% 6% 1% 0%;" @onclick="modal.HideAsync" >
+                NÃO
+            </button>
+             <button class="officialButton" style="margin: 1% 0% 1% 6%;" @onclick="FinalizarProva">
+                SIM
+                    </button>
+        </Div>       
+       
+    </FooterTemplate>
+
+</BlazorBootstrap.Modal>
+
+
+
+<BlazorBootstrap.Modal @ref="modalRef" title="RESULTADO" IsVerticallyCentered="true" ShowCloseButton="false" UseStaticBackdrop="true">
+    <BodyTemplate>
+        <div style="text-align:center">
+            
+            <span>SUA NOTA FOI: @Math.Round(nota, 1).ToString() </span>
+        </div>
+    </BodyTemplate>
+    <FooterTemplate>     
+
+        <Div Style="display: flex; justify-content: center; width: 100%;">
+            <button class="officialButton" style="margin: 1% 6% 1% 0%;" @onclick="FinalizarForm" >
+                OK
+            </button>
+            <button class="officialButton" style="margin: 1% 0% 1% 6%;" @onclick="VizualizarGabarito">
+                Gabarito
+            </button>
+        </Div>
+        
+    </FooterTemplate>
+</BlazorBootstrap.Modal>
+
+@* 
+@((MarkupString)@"
+        <style>
+        .bi bi-x-lg{
+display: none!important;
+
+}
+        </style>") *@
+
+
+<BlazorBootstrap.Modal @ref="Filter" OnHiding="FinalizarForm" Title="Gabarito" Fullscreen="ModalFullscreen.Always">
+    <BodyTemplate>
+        @if (Finalizado)
+        {
+            loading = "";
+            <RotaxJornadaGabarito data="@service.RespostaFormulario" Filter="@Filter" />
+        }
+    </BodyTemplate>
+</BlazorBootstrap.Modal>
+
+<Blazorise.PageProgressProvider />
+<NotificationProvider />
+<Blazorise.MessageProvider />
+<Preload />

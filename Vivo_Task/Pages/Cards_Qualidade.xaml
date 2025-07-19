@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:tp="clr-namespace:Vivo_Task.Templates"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviorPages="clr-namespace:Vivo_Task.Animations"
+             x:DataType="vm:CardsViewModel"
+             x:Class="Vivo_Task.Pages.Cards_Qualidade" 
+             BackgroundColor="White"
+             Title="Cards Consumer">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Recarregar" Command="{Binding ReloadPage}" IconImageSource="reload.png"/>
+        <!--<ToolbarItem Text="Voltar" Clicked="ToolbarItem_Clicked_1" IconImageSource="arrowundo.png"/>-->
+    </ContentPage.ToolbarItems>
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButton}">
+        </BackButtonBehavior>
+    </Shell.BackButtonBehavior>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    <Shell.TitleView>
+        <Grid
+            RowDefinitions="Auto"
+            ColumnDefinitions="Auto"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Background="DarkSlateBlue">
+            <!--<Grid.Background>
+                <LinearGradientBrush EndPoint="1,0">
+                    <GradientStop Color="DarkSlateBlue"
+                                    Offset="0.1" />
+                    <GradientStop Color="MediumSlateBlue"
+                                    Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>-->
+            <Label Text="GALERIA JORNADA" TextColor="white" Margin="5,15" CharacterSpacing="4" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="18" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <Grid >
+        <Frame HorizontalOptions="Center" BackgroundColor="Transparent" HasShadow="True" Padding="0" Margin="0,0">
+            <ScrollView>
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                    <VerticalStackLayout Grid.Row="0">
+                        <Label Text="QUALIDADE" TextColor="SlateBlue" FontFamily="Vivo-font-bold" FontSize="20" CharacterSpacing="2" Margin="10" HorizontalOptions="Center" />
+
+                        <cards:CoverFlowView x:Name="carouselViewQualidade" PositionShiftValue="-15" IsVisible="{OnPlatform WinUI=False,Android=True}"
+                            ItemsSource="{Binding Cards_Qualidade}" HorizontalOptions="CenterAndExpand"
+                             IsHorizontalOrientation="True" >
+                            <x:Arguments>
+                                <proc:CoverFlowProcessor ScaleFactor="0.75" OpacityFactor="0.25" />
+                            </x:Arguments>
+                            <cards:CoverFlowView.ItemTemplate >
+                                <DataTemplate x:DataType="model:Cards_data">
+                                    <ContentView>
+                                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" RowSpacing="5" >
+                                            <Frame  VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Padding="0" 
+                                 BackgroundColor="Transparent"
+                                 HasShadow="false"
+                                 IsClippedToBounds="true"
+                                 BorderColor="White"
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                 CornerRadius="10">
+
+                                                <Image HorizontalOptions="Center"
+                                    WidthRequest="300" HeightRequest="300"
+                                    Source="{Binding contentBytes}"
+                                    Aspect="AspectFill"/>
+                                            </Frame>
+
+                                            <Button Text="{x:Static model:IconFontWeb.Eye}" 
+                                    CommandParameter="{Binding .}"
+                                    Clicked="Button_Clicked"
+                                    HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                                    Grid.Column="0" WidthRequest="50" HeightRequest="50" Padding="0"
+                                    Grid.Row="0" BackgroundColor="DarkSlateBlue"
+                                    FontFamily="Desktop" FontSize="28" TextColor="White" >
+                                                <Button.Clip>
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                                </Button.Clip>
+                                                <Button.Behaviors>
+                                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                Easing="{x:Static Easing.Linear}"
+                                                Length="250"
+                                                Scale="1.1"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+
+                                                    <toolkit:AnimationBehavior EventName="Released">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                Easing="{x:Static Easing.Linear}"
+                                                Length="250"
+                                                Scale="1.0"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+                                                </Button.Behaviors>
+                                            </Button>
+
+                                        </Grid>
+                                    </ContentView>
+                                </DataTemplate>
+                            </cards:CoverFlowView.ItemTemplate>
+                        </cards:CoverFlowView>
+
+                        <ScrollView IsVisible="{OnPlatform Android=false}" Orientation="Horizontal">
+                            <CollectionView ItemsSource="{Binding Cards_Qualidade}"  HeightRequest="400" WidthRequest="1000">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Cards_data">
+                                        <ContentView>
+                                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                                                Padding="40,0">
+                                                <Frame  VerticalOptions="Center"
+                                                    HorizontalOptions="Center"
+                                                    Padding="0" BackgroundColor="Transparent"
+                                                    HasShadow="false"
+                                                    IsClippedToBounds="true"
+                                                    BorderColor="White"
+                                                    Grid.Column="0"
+                                                    Grid.Row="0"
+                                                    CornerRadius="15">
+
+                                                    <Image HorizontalOptions="Center"
+                                                        WidthRequest="300" HeightRequest="300"
+                                                        Source="{Binding contentBytes}"
+                                                        Aspect="AspectFit">
+                                                        <Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Tapped="Image_Clicked" CommandParameter="{Binding .}" />
+                                                        </Image.GestureRecognizers>
+                                                    </Image>
+
+                                                </Frame>
+                                            </Grid>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="1">
+                        <Label Text="OFERTAS" TextColor="SlateBlue" FontFamily="Vivo-font-bold" FontSize="20" CharacterSpacing="2" Margin="10" HorizontalOptions="Center"  />
+                        <cards:CoverFlowView x:Name="carouselViewOfertas" PositionShiftValue="-15"  IsVisible="{OnPlatform WinUI=False,Android=True}"
+                                ItemsSource="{Binding Cards_Ofertas}" HorizontalOptions="CenterAndExpand"
+                                 IsHorizontalOrientation="True" >
+                            <x:Arguments>
+                                <proc:CoverFlowProcessor ScaleFactor="0.75" OpacityFactor="0.25" />
+                            </x:Arguments>
+                            <cards:CoverFlowView.ItemTemplate >
+                                <DataTemplate x:DataType="model:Cards_data">
+                                    <ContentView>
+                                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" RowSpacing="5" >
+                                            <Frame  VerticalOptions="Center"
+                                                    HorizontalOptions="Center"
+                                                    Padding="0" 
+                                                    BackgroundColor="Transparent"
+                                                    HasShadow="false"
+                                                    IsClippedToBounds="true"
+                                                    BorderColor="White"
+                                                       Grid.Column="0"
+                                                       Grid.Row="0"
+                                                    CornerRadius="10">
+
+                                                <Image HorizontalOptions="Center"
+                                                        WidthRequest="300" HeightRequest="300"
+                                                        Source="{Binding contentBytes}"
+                                                        Aspect="AspectFill"/>
+                                            </Frame>
+
+                                            <Button Text="{x:Static model:IconFontWeb.Eye}" 
+                                                    CommandParameter="{Binding .}"
+                                                    Clicked="Button_Clicked"
+                                                    HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                                                    Grid.Column="0" WidthRequest="50" HeightRequest="50" Padding="0"
+                                                    Grid.Row="0" BackgroundColor="DarkSlateBlue"
+                                                    FontFamily="Desktop" FontSize="28" TextColor="White" >
+                                                <Button.Clip>
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                                </Button.Clip>
+                                                <Button.Behaviors>
+                                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                            Easing="{x:Static Easing.Linear}"
+                                                            Length="250"
+                                                            Scale="1.1"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+
+                                                    <toolkit:AnimationBehavior EventName="Released">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                            Easing="{x:Static Easing.Linear}"
+                                                            Length="250"
+                                                            Scale="1.0"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+                                                </Button.Behaviors>
+                                            </Button>
+
+                                        </Grid>
+                                    </ContentView>
+                                </DataTemplate>
+                            </cards:CoverFlowView.ItemTemplate>
+                        </cards:CoverFlowView>
+
+                        <ScrollView IsVisible="{OnPlatform Android=false}" Orientation="Horizontal">
+                            <CollectionView ItemsSource="{Binding Cards_Ofertas}"  HeightRequest="400" WidthRequest="1000">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Cards_data">
+                                        <ContentView>
+                                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                    Padding="40,0">
+                                                <Frame  VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Padding="0" BackgroundColor="Transparent"
+                        HasShadow="false"
+                        IsClippedToBounds="true"
+                        BorderColor="White"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        CornerRadius="15">
+
+                                                    <Image HorizontalOptions="Center"
+                            WidthRequest="300" HeightRequest="300"
+                            Source="{Binding contentBytes}"
+                            Aspect="AspectFit">
+                                                        <Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Tapped="Image_Clicked" CommandParameter="{Binding .}" />
+                                                        </Image.GestureRecognizers>
+                                                    </Image>
+
+                                                </Frame>
+                                            </Grid>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="2">
+                        <Label Text="PROCESSOS" TextColor="SlateBlue" FontFamily="Vivo-font-bold" FontSize="20" CharacterSpacing="2" Margin="10" HorizontalOptions="Center"  />
+                        <cards:CoverFlowView x:Name="carouselViewProcessos" PositionShiftValue="-15"  IsVisible="{OnPlatform WinUI=False,Android=True}"
+                                ItemsSource="{Binding Cards_Processos}" HorizontalOptions="CenterAndExpand"
+                                 IsHorizontalOrientation="True" >
+                            <x:Arguments>
+                                <proc:CoverFlowProcessor ScaleFactor="0.75" OpacityFactor="0.25" />
+                            </x:Arguments>
+                            <cards:CoverFlowView.ItemTemplate >
+                                <DataTemplate x:DataType="model:Cards_data">
+                                    <ContentView>
+                                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" RowSpacing="5" >
+                                            <Frame  VerticalOptions="Center"
+                                                HorizontalOptions="Center"
+                                                Padding="0" 
+                                                BackgroundColor="Transparent"
+                                                HasShadow="false"
+                                                IsClippedToBounds="true"
+                                                BorderColor="White"
+                                                   Grid.Column="0"
+                                                   Grid.Row="0"
+                                                CornerRadius="10">
+                                                <Image HorizontalOptions="Center"
+                                                    WidthRequest="300" HeightRequest="300"
+                                                    Source="{Binding contentBytes}"
+                                                    Aspect="AspectFill"/>
+                                            </Frame>
+
+                                            <Button Text="{x:Static model:IconFontWeb.Eye}" 
+                                                CommandParameter="{Binding .}"
+                                                Clicked="Button_Clicked"
+                                                HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                                                Grid.Column="0" WidthRequest="50" HeightRequest="50" Padding="0"
+                                                Grid.Row="0" BackgroundColor="DarkSlateBlue"
+                                                FontFamily="Desktop" FontSize="28" TextColor="White" >
+                                                <Button.Clip>
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                                </Button.Clip>
+                                                <Button.Behaviors>
+                                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                                Easing="{x:Static Easing.Linear}"
+                                                                Length="250"
+                                                                Scale="1.1"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+
+                                                    <toolkit:AnimationBehavior EventName="Released">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                                Easing="{x:Static Easing.Linear}"
+                                                                Length="250"
+                                                                Scale="1.0"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+                                                </Button.Behaviors>
+                                            </Button>
+
+                                        </Grid>
+                                    </ContentView>
+                                </DataTemplate>
+                            </cards:CoverFlowView.ItemTemplate>
+                        </cards:CoverFlowView>
+
+                        <ScrollView IsVisible="{OnPlatform Android=false}" Orientation="Horizontal">
+                            <CollectionView ItemsSource="{Binding Cards_Processos}"  HeightRequest="400" WidthRequest="1000">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Cards_data">
+                                        <ContentView>
+                                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                    Padding="40,0">
+                                                <Frame  VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Padding="0" BackgroundColor="Transparent"
+                        HasShadow="false"
+                        IsClippedToBounds="true"
+                        BorderColor="White"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        CornerRadius="15">
+
+                                                    <Image HorizontalOptions="Center"
+                            WidthRequest="300" HeightRequest="300"
+                            Source="{Binding contentBytes}"
+                            Aspect="AspectFit">
+                                                        <Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Tapped="Image_Clicked" CommandParameter="{Binding .}" />
+                                                        </Image.GestureRecognizers>
+                                                    </Image>
+
+                                                </Frame>
+                                            </Grid>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="3">
+                        <Label Text="PESSOAS" TextColor="SlateBlue" FontFamily="Vivo-font-bold" FontSize="20" CharacterSpacing="2" Margin="10" HorizontalOptions="Center"  />
+                        <cards:CoverFlowView x:Name="carouselViewPessoas" PositionShiftValue="-15"  IsVisible="{OnPlatform WinUI=False,Android=True}"
+                                ItemsSource="{Binding Cards_Pessoas}" HorizontalOptions="CenterAndExpand"
+                                 IsHorizontalOrientation="True" >
+                            <x:Arguments>
+                                <proc:CoverFlowProcessor ScaleFactor="0.75" OpacityFactor="0.25" />
+                            </x:Arguments>
+                            <cards:CoverFlowView.ItemTemplate >
+                                <DataTemplate x:DataType="model:Cards_data">
+                                    <ContentView>
+                                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto" RowSpacing="5" >
+                                            <Frame  VerticalOptions="Center"
+                                                HorizontalOptions="Center"
+                                                Padding="0" 
+                                                BackgroundColor="Transparent"
+                                                HasShadow="false"
+                                                IsClippedToBounds="true"
+                                                BorderColor="White"
+                                                   Grid.Column="0"
+                                                   Grid.Row="0"
+                                                CornerRadius="10">
+
+                                                <Image HorizontalOptions="Center"
+                                                    WidthRequest="300" HeightRequest="300"
+                                                    Source="{Binding contentBytes}"
+                                                    Aspect="AspectFill"/>
+                                            </Frame>
+
+                                            <Button Text="{x:Static model:IconFontWeb.Eye}" 
+                                                CommandParameter="{Binding .}"
+                                                Clicked="Button_Clicked"
+                                                HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                                                Grid.Column="0" WidthRequest="50" HeightRequest="50" Padding="0"
+                                                Grid.Row="0" BackgroundColor="DarkSlateBlue"
+                                                FontFamily="Desktop" FontSize="28" TextColor="White" >
+                                                <Button.Clip>
+                                                    <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                                                </Button.Clip>
+                                                <Button.Behaviors>
+                                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                                Easing="{x:Static Easing.Linear}"
+                                                                Length="250"
+                                                                Scale="1.1"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+
+                                                    <toolkit:AnimationBehavior EventName="Released">
+                                                        <toolkit:AnimationBehavior.AnimationType>
+                                                            <behaviorPages:SampleScaleToAnimation 
+                                                                Easing="{x:Static Easing.Linear}"
+                                                                Length="250"
+                                                                Scale="1.0"/>
+                                                        </toolkit:AnimationBehavior.AnimationType>
+                                                    </toolkit:AnimationBehavior>
+                                                </Button.Behaviors>
+                                            </Button>
+
+                                        </Grid>
+                                    </ContentView>
+                                </DataTemplate>
+                            </cards:CoverFlowView.ItemTemplate>
+                        </cards:CoverFlowView>
+
+                        <ScrollView IsVisible="{OnPlatform Android=false}" Orientation="Horizontal">
+                            <CollectionView ItemsSource="{Binding Cards_Pessoas}"  HeightRequest="400" WidthRequest="1000">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:Cards_data">
+                                        <ContentView>
+                                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                    Padding="40,0">
+                                                <Frame  VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Padding="0" BackgroundColor="Transparent"
+                        HasShadow="false"
+                        IsClippedToBounds="true"
+                        BorderColor="White"
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        CornerRadius="15">
+
+                                                    <Image HorizontalOptions="Center"
+                            WidthRequest="300" HeightRequest="300"
+                            Source="{Binding contentBytes}"
+                            Aspect="AspectFit">
+                                                        <Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Tapped="Image_Clicked" CommandParameter="{Binding .}" />
+                                                        </Image.GestureRecognizers>
+                                                    </Image>
+
+                                                </Frame>
+                                            </Grid>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                </Grid>
+            </ScrollView>
+        </Frame>
+    </Grid>
+</ContentPage>

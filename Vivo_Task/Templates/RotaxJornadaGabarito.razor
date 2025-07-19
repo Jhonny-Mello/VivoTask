@@ -1,0 +1,576 @@
+﻿@using Vivo_Task.ModelDTO
+@using Vivo_Task.Shared_Static_Class.FundamentalModels
+@using Microsoft.AspNetCore.Components.Web
+@using System.ComponentModel
+@using System.Globalization
+@using Shared_Class_Vivo_Apps.ModelDTO
+@using DividerType = Blazorise.DividerType
+@using IconName = Blazorise.IconName
+@using IconSize = BlazorBootstrap.IconSize
+@using Modal = BlazorBootstrap.Modal
+@using Offcanvas = BlazorBootstrap.Offcanvas
+@using Placement = BlazorBootstrap.Placement
+@using TextAlignment = Blazorise.TextAlignment
+@using TextColor = Blazorise.TextColor
+@using Radzen.Blazor;
+@using Blazorise;
+@using Microsoft.FluentUI.AspNetCore.Components;
+
+
+<Blazorise.Steps @ref="stepsRef" VerticalAlignment="Blazorise.VerticalAlignment.TextBottom" @bind-SelectedStep="selectedStep">
+    <Items>
+        @foreach (var item in data.QUESTIONS.Select((x, i) => new { Value = x, Index = i }))
+        {
+            <Blazorise.Step Name="@((item.Index+1).ToString())" Color="Blazorise.Color.Dark" Class="stepPainal">
+            </Blazorise.Step>
+        }
+    </Items>
+
+    <Content>
+        @foreach (var item in data.QUESTIONS.Select((x, i) => new { Value = x, Index = i }))
+        {
+            <Blazorise.StepPanel Name="@((item.Index+1).ToString())">
+
+                @*  !!!!! LOGICA PRA EXIBIR PERGUNTA E ICONE SOBRE O ACERTO E O PESO !!!!!! *@
+
+                @if (item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_ESCOLHIDA == true && x.RESPOSTA_CORRETA == true)) //Acertou a questão
+                {
+                    <span style="font-weight: bold;display: flex;flex-direction: column;border: solid;border-color: #893AAF;padding: 2%;margin: 1%;border-radius: 10px;border-width: 2px !important;text-align: center;justify-content: center;align-items: center; width: 85%;">
+                        @if (item.Value.TP_QUESTAO != "MULTIPLA ESCOLHA")
+                        {
+
+                            <Div style="margin-inline:2px">
+                                @(item.Value.PERGUNTA)
+                            </Div>
+
+                            @* <Div Class="QuestionGreen" Style="font-size: 14px;">
+
+                <Div Style="margin: 0px 7px 0px 0px;">Resposta Correta</Div>
+
+                <Blazorise.Badge Color="Blazorise.Color.Success">
+                + @item.Value.PESO
+                </Blazorise.Badge>
+
+                <i class="bi bi-check-circle-fill" style="font-size: 16px; color: #198754;"></i>
+
+                </Div> *@
+                        }
+                        else
+                        {
+
+                            <div style="margin-inline:2px">
+                                @(item.Value.PERGUNTA)
+                            </div>
+                        }
+                    </span>
+                }
+                else
+                {
+                    <span style="font-weight: bold;display: flex;flex-direction: column;border: solid;border-color: #893AAF;padding: 2%;margin: 1%;border-radius: 10px;border-width: 2px !important;text-align: center;justify-content: center;align-items: center; width: 85%;">
+
+
+                        <Div Style="margin-inline:2px">
+                            @(item.Value.PERGUNTA)
+                        </Div>
+
+                        @* <Div Class="QuestionRed" Style="font-size: 14px; ">
+
+                <Div Style="margin: 0px 7px 0px 0px;">Resposta Incorreta</Div>
+
+                <Blazorise.Badge Color="Blazorise.Color.Danger">
+                - @item.Value.PESO
+                </Blazorise.Badge>
+
+                <i class="bi bi-x-circle-fill" style="font-size: 16px; color: #b21b2b;"></i>
+
+                </Div> *@
+
+                    </span>
+                }
+
+                @*  !!!!!!! EXIBIÇÃO DAS ALTERNATIVAS !!!!!!!!!  *@
+
+                <FluentGrid Spacing="3" Justify="Microsoft.FluentUI.AspNetCore.Components.JustifyContent.Center" Style="align-items: center;min-height: 230px;justify-content: center; display: flex; margin-bottom: 3%; margin-top: 3%; width: 85%!important;">
+
+
+                    @if (item.Value.TP_QUESTAO == "ÚNICA ALTERNATIVA")
+                    {
+                        @*  <Blazorise.Divider DividerType="Blazorise.DividerType.TextContent" Text="Alternativas" /> *@
+
+                        @foreach (var item_AL in item.Value.ALTERNATIVAS)
+                        {
+
+                            if (item_AL.ALTERNATIVA != "NULL")
+                            {
+                                if (item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_CORRETA == true && x.RESPOSTA_ESCOLHIDA == true)) //Acertou a questão
+                                {
+                                    if (item_AL.RESPOSTA_CORRETA == true && item_AL.RESPOSTA_ESCOLHIDA == true)
+                                    {
+
+                                        <FluentGridItem xs="12" sm="4" Style="">
+
+
+                                            <div class="list-group-item selectedGreen">
+
+
+
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+                                        <br />
+                                    }
+                                    else
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+                                        <br />
+                                    }
+                                }
+                                else //Errou a questão
+                                {
+                                    if (item_AL.RESPOSTA_CORRETA == true)
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item selectedGreen">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+                                        <br />
+                                    }
+                                    else if (item_AL.RESPOSTA_ESCOLHIDA == true) //
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item selectedRed">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+                                        <br />
+                                    }
+                                    else
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+                                        <br />
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+                    else if (item.Value.TP_QUESTAO == "MULTIPLA ESCOLHA")
+                    {
+                        @* <Blazorise.Divider DividerType="Blazorise.DividerType.TextContent" Text="Alternativas" /> *@
+                        @foreach (var item_AL in item.Value.ALTERNATIVAS)
+                        {
+                            if (item_AL.ALTERNATIVA != "NULL")
+                            {
+                                if (item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_CORRETA == true && x.RESPOSTA_ESCOLHIDA == true)) //Acertou a questão
+                                {
+                                    if (item.Value.ALTERNATIVAS.All(x => x.RESPOSTA_CORRETA == true && x.RESPOSTA_ESCOLHIDA == true))
+                                    // Acertou todas as alternativas
+                                    {
+                                        if (item_AL.RESPOSTA_ESCOLHIDA == true)
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item selectedGreen">
+                                                    <span>
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+
+                                        }
+                                        else
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item">
+                                                    <span>
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+
+                                            </FluentGridItem>
+                                        }
+                                    }
+                                    else
+                                    // Acertou alguma alternativa mas não todas
+                                    {
+                                        if (item_AL.RESPOSTA_CORRETA == true && item_AL.RESPOSTA_ESCOLHIDA == true)
+                                        // Alternativas que acertou
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item selectedGreen">
+                                                    <span style="display: flex;">
+                                                        <Blazorise.Icon Name="Blazorise.IconName.CheckCircle"
+                                                                        TextColor="Blazorise.TextColor.Success" IconSize="Blazorise.IconSize.Small" />
+                                                        <span style="margin-inline:3px">
+                                                            @item_AL.ALTERNATIVA
+                                                        </span>
+                                                        <Blazorise.Badge Color="Blazorise.Color.Success">
+                                                            @item_AL.PESO
+                                                        </Blazorise.Badge>
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+                                            <br />
+                                        }
+                                        else if (item_AL.RESPOSTA_CORRETA == false && item_AL.RESPOSTA_ESCOLHIDA == true)
+                                        // Alternativas incorretas que foram escolhidas
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item selectedRed">
+                                                    <span style="display: flex;">
+                                                        <Blazorise.Icon Name="Blazorise.IconName.TimesCircle"
+                                                                        TextColor="Blazorise.TextColor.Danger" IconSize="Blazorise.IconSize.Small" />
+                                                        <span style="margin-inline:3px">
+                                                            @item_AL.ALTERNATIVA
+                                                        </span>
+                                                        <Blazorise.Badge Color="Blazorise.Color.Danger">
+                                                            @(Math.Round(Convert.ToDouble(item_AL.PESO), 2))
+                                                        </Blazorise.Badge>
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+
+                                        }
+                                        else if (item_AL.RESPOSTA_CORRETA == true && item_AL.RESPOSTA_ESCOLHIDA == false)  // Alternativas corretas que não foram escolhidas
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item selectedGray">
+                                                    <span>
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+
+                                        }
+                                        else
+                                        {
+                                            <FluentGridItem xs="12" sm="4" Style="">
+                                                <div class="list-group-item">
+                                                    <span>
+                                                        @item_AL.ALTERNATIVA
+                                                    </span>
+                                                </div>
+                                            </FluentGridItem>
+                                        }
+                                    }
+                                }
+                                else //Errou a questão
+                                {
+                                    if (item_AL.RESPOSTA_ESCOLHIDA == true) //
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item selectedRed">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+
+                                    }
+                                    else if (item_AL.RESPOSTA_CORRETA == true)
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item selectedGray">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+
+                                    }
+                                    else
+                                    {
+                                        <FluentGridItem xs="12" sm="4" Style="">
+                                            <div class="list-group-item">
+                                                <span>
+                                                    @item_AL.ALTERNATIVA
+                                                </span>
+                                            </div>
+                                        </FluentGridItem>
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (item.Value.TP_QUESTAO == "VERDADEIRO/FALSO")
+                    {
+
+                        if (item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_CORRETA == true && x.RESPOSTA_ESCOLHIDA == true))
+                        {
+
+                            <FluentGridItem xs="12" sm="6" Style="display:flex; justify-content:center;">
+                                <div class="list-group-item selected-form @(item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_ESCOLHIDA == true && x.ALTERNATIVA == "VERDADEIRO") ? "selectedGreen" :"")">
+                                    <span style="display: flex;">
+                                        <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" TextColor="Blazorise.TextColor.Success" IconSize="Blazorise.IconSize.x2">
+                                        </Blazorise.Icon>
+                                        <span>VERDADEIRO</span>
+                                    </span>
+                                </div>
+                            </FluentGridItem>
+
+                            <FluentGridItem xs="12" sm="6" Style="display:flex; justify-content:center;">
+                                <div class="list-group-item selected-form @(item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_ESCOLHIDA == true && x.ALTERNATIVA == "FALSO")? "selectedGreen":"")">
+                                    <span style="display: flex;">
+                                        <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" TextColor="Blazorise.TextColor.Danger" IconSize="Blazorise.IconSize.x2">
+                                        </Blazorise.Icon>
+                                        <span>FALSO</span>
+                                    </span>
+                                </div>
+                            </FluentGridItem>
+
+                        }
+                        else
+                        {
+                            <FluentGridItem xs="12" sm="6" Style="display:flex; justify-content:center;">
+                                <div class="list-group-item selected-form @(item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_ESCOLHIDA == true && x.ALTERNATIVA == "VERDADEIRO") ? "selectedRed" : "selectedGreen")">
+                                    <span style="display: flex;">
+                                        <Blazorise.Icon Name="Blazorise.IconName.CheckCircle" TextColor="Blazorise.TextColor.Success" IconSize="Blazorise.IconSize.x2">
+                                        </Blazorise.Icon>
+                                        <span>VERDADEIRO</span>
+                                    </span>
+                                </div>
+                            </FluentGridItem>
+
+                            <FluentGridItem xs="12" sm="6" Style="display:flex; justify-content:center;">
+                                <div class="list-group-item selected-form @(item.Value.ALTERNATIVAS.Any(x => x.RESPOSTA_ESCOLHIDA == true && x.ALTERNATIVA == "FALSO")? "selectedRed": "selectedGreen")">
+                                    <span style="display: flex;">
+                                        <Blazorise.Icon Name="Blazorise.IconName.TimesCircle" TextColor="Blazorise.TextColor.Danger" IconSize="Blazorise.IconSize.x2">
+                                        </Blazorise.Icon>
+                                        <span>FALSO</span>
+                                    </span>
+                                </div>
+                            </FluentGridItem>
+
+                            <br />
+                            @*  <span>
+                Resposta correta :
+                <label style="font-weight:bold;">@item.Value.ALTERNATIVAS.Where(x => x.RESPOSTA_CORRETA == true).FirstOrDefault().ALTERNATIVA</label>
+                </span> *@
+                        }
+                    }
+
+                </FluentGrid>
+
+                @* !!!!!!!!! "FOOTER" DA PAGINA  !!!!!!!! *@
+
+
+                @if (item.Index == 0)
+                {
+
+                    <Blazorise.Div Display="Display.Flex" Class="footer-form footerProva" Gap="Gap.Is3" Style="justify-content: flex-end; !important; display: flex !important; width: 80%!important;">
+
+                        <Microsoft.AspNetCore.Components.Routing.NavLink href="/">
+                            <BlazorBootstrap.Button Color="BlazorBootstrap.ButtonColor.Success" @onclick="() => Filter.HideAsync()" Class="btn btn-primary" Style="color:grey; color: white; padding: 0.7%; border-radius: 15px; background: #893AAF!important; display: flex; align-items: center; justify-content: center; margin: 0 !important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; padding: 15%!important;">Fechar</BlazorBootstrap.Button>
+                        </Microsoft.AspNetCore.Components.Routing.NavLink>
+
+                        <BlazorBootstrap.Button Class="button-icon" Color="BlazorBootstrap.ButtonColor.Primary" @onclick="() => stepsRef.NextStep()" Size="BlazorBootstrap.ButtonSize.Small" TooltipTitle="Próximo" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;margin: 0% 20% 0% 21% !important;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowRight" Size="BlazorBootstrap.IconSize.x4" />
+                        </BlazorBootstrap.Button>
+
+                    </Blazorise.Div>
+
+                }
+                else if (item.Index == data.QUESTIONS.Count() - 1)
+                {
+                    <Blazorise.Div Display="Display.Flex" Class="footer-form footerProva" Gap="Gap.Is3" Style="justify-content: flex-start; !important; display: flex !important; width: 80%!important;">
+
+                        <BlazorBootstrap.Button Class="button-icon" @onclick="() => stepsRef.PreviousStep()" Size="BlazorBootstrap.ButtonSize.Small" TooltipTitle="Anterior" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%; margin: 0% 20% 0% 21% !important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; color:white!important">
+                            <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowLeft" Size="BlazorBootstrap.IconSize.x4" />
+                        </BlazorBootstrap.Button>
+
+
+                        <Microsoft.AspNetCore.Components.Routing.NavLink href="/">
+                            <BlazorBootstrap.Button Color="BlazorBootstrap.ButtonColor.Success" @onclick="() => Filter.HideAsync()" Class="btn btn-primary" Style="color:grey; color: white; padding: 0.7%; border-radius: 15px; background: #893AAF!important; display: flex; align-items: center; justify-content: center; margin: 0 !important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; padding: 15%!important;">Fechar</BlazorBootstrap.Button>
+                        </Microsoft.AspNetCore.Components.Routing.NavLink>
+
+
+                    </Blazorise.Div>
+                }
+                else
+                {
+                    <Blazorise.Div Display="Display.Flex" Class="footer-form footerProva" Flex="Flex.JustifyContent.Between" Style="justify-content: space-evenly !important; display: flex !important; width: 80%!important;">
+                        @if ((item.Index + 1) != 1)
+                        {
+                            <BlazorBootstrap.Button Class="button-icon" @onclick="() => stepsRef.PreviousStep()" Size="BlazorBootstrap.ButtonSize.Small" TooltipTitle="Anterior" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; color:white!important">
+                                <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowLeft" Size="BlazorBootstrap.IconSize.x4" />
+                            </BlazorBootstrap.Button>
+
+                        }
+                        <Microsoft.AspNetCore.Components.Routing.NavLink href="/">
+                            <BlazorBootstrap.Button Color="BlazorBootstrap.ButtonColor.Success" @onclick="() => Filter.HideAsync()" Class="btn btn-primary" Style="color:grey; color: white; padding: 0.7%; border-radius: 15px; background: #893AAF!important; display: flex; align-items: center; justify-content: center; margin: 0 !important; -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important; padding: 15%!important;">Fechar</BlazorBootstrap.Button>
+                        </Microsoft.AspNetCore.Components.Routing.NavLink>
+                        @if ((item.Index + 1) != data.QUESTIONS.Count)
+                        {
+                            <BlazorBootstrap.Button Class="button-icon" Color="BlazorBootstrap.ButtonColor.Primary" @onclick="() => stepsRef.NextStep()" Size="BlazorBootstrap.ButtonSize.Small" TooltipTitle="Próximo" Style="background: #893AAF!important; padding: 0% 1% 0% 1%;border-radius: 13px;height: 90%;-webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19) !important;">
+                                <BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.ArrowRight" Size="BlazorBootstrap.IconSize.x4" />
+                            </BlazorBootstrap.Button>
+                        }
+                    </Blazorise.Div>
+                }
+
+            </Blazorise.StepPanel>
+        }
+
+    </Content>
+</Blazorise.Steps>
+
+<style>
+    .true-false {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-body {
+        padding: 2% !important;
+    }
+
+    .list-group-item {
+        border-radius: 10px !important;
+        padding: 7% !important;
+        height: 85% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-content: center !important;
+    }
+
+
+    .QuestionGreen {
+        font-weight: bold !important;
+        display: flex !important;
+        border: solid !important;
+        border-color: #198754 !important;
+        padding: 1% !important;
+        border-radius: 10px !important;
+        border-width: 2px !important;
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: row !important;
+        margin: 2% 0% 0% 0% !important;
+    }
+
+    .QuestionRed {
+        font-weight: bold !important;
+        display: flex !important;
+        border: solid !important;
+        border-color: #b21b2b !important;
+        padding: 1% !important;
+        border-radius: 10px !important;
+        border-width: 2px !important;
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: row !important;
+        margin: 2% 0% 0% 0% !important;
+    }
+
+
+    .selectedGreen::before {
+        content: "\2713";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: 95%;
+        top: 0%;
+        transform: translateY(-50%);
+        font-size: 17px;
+        color: #198754;
+        border: solid;
+        padding: 1% 3% 1% 3%;
+        border-radius: 100%;
+        background: white;
+        font-weight: bold;
+        height: 30px;
+        width: 30px;
+    }
+
+
+    .selectedRed::before {
+        content: "\2716";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: 95%;
+        top: 0%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #b21b2b;
+        border: solid;
+        padding: 1% 3% 1% 3%;
+        border-radius: 100%;
+        background: white;
+        font-weight: bold;
+        height: 30px;
+        width: 30px;
+    }
+
+    .QuestionGray {
+        font-weight: bold !important;
+        display: flex !important;
+        border: solid !important;
+        border-color: gray !important;
+        padding: 1% !important;
+        border-radius: 10px !important;
+        border-width: 2px !important;
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: row !important;
+        margin: 2% 0% 0% 0% !important;
+    }
+
+    .selectedGray::before {
+        content: "!";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        left: 95%;
+        top: 0%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: gray;
+        border: solid;
+        padding: 1% 3% 1% 3%;
+        border-radius: 100%;
+        background: white;
+        font-weight: bold;
+        height: 30px;
+        width: 30px;
+    }
+
+</style>
+
+@code {
+    [Parameter]
+    public Formulario? data { get; set; }
+    [Parameter]
+    public BlazorBootstrap.Modal Filter { get; set; }
+
+    string selectedStep = "1";
+    private Blazorise.Steps stepsRef;
+
+}

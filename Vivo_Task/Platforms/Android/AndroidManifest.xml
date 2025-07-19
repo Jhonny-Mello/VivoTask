@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+	<application android:usesCleartextTraffic="true" android:allowBackup="true" android:enableOnBackInvokedCallback="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:requestLegacyExternalStorage="true"></application>
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT" />
+	<uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT_TREE" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<!-- Required to maintain app compatibility. -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="21" />
+	<uses-permission android:minSdkVersion="21" android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:minSdkVersion="21" android:name="android.permission.READ_MEDIA_VIDEO" />
+	<uses-permission android:minSdkVersion="21" android:name="android.permission.READ_MEDIA_AUDIO" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<queries>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="http" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="https" />
+		</intent>
+	</queries>
+</manifest>

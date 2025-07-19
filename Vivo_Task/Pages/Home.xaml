@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviorPages="clr-namespace:Vivo_Task.Animations"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:model="clr-namespace:Vivo_Task.Models"
+             xmlns:templates="clr-namespace:Vivo_Task.Templates"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:proc="clr-namespace:PanCardView.Processors;assembly=PanCardView"
+             xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
+             xmlns:cvt="clr-namespace:Vivo_Task.Converters"
+             xmlns:modeldto="clr-namespace:Vivo_Task.Model_DTO"
+             x:Class="Vivo_Task.Pages.Home"
+             x:DataType="vm:HomeViewModel"
+             BackgroundColor="White"
+             Title="">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    
+    <!--#region  Scroll Part -->
+    <Shell.TitleView>
+        <Grid
+            RowDefinitions="Auto"
+            ColumnDefinitions="Auto"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Background="DarkSlateBlue">
+            <Label Text="VIVO TASK" TextColor="white" Margin="35,9" CharacterSpacing="4" HorizontalOptions="Center" VerticalOptions="Center"
+                   FontSize="23" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <!--#endregion-->
+    
+    <!--#region Buttons Area -->
+    <ScrollView Margin="0,0,0,20">
+        <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" RowDefinitions="*, Auto, Auto" BackgroundColor="White" >
+            <Grid VerticalOptions="FillAndExpand" Grid.Row="0" 
+              HorizontalOptions="FillAndExpand" BackgroundColor="Transparent" ColumnSpacing="0" RowSpacing="0"
+              ZIndex="10" RowDefinitions="{OnPlatform WinUI='400,*,Auto',Android='300,*,Auto',iOS='300,*,Auto'}" >
+                <VerticalStackLayout Grid.Row="0" Margin="0,25,0,0" Spacing="10">
+                    <HorizontalStackLayout Padding="25,0">
+                        <Label Text="Notícias" FontFamily="Vivo-font-light" FontSize="25" TextColor="DarkSlateBlue" />
+                        <ActivityIndicator  IsRunning="{Binding IsBusy}" IsVisible="True" Grid.Row="0"
+                            HorizontalOptions="Center" VerticalOptions="Center" 
+                            WidthRequest="20" Color="DarkSlateBlue" HeightRequest="20" ZIndex="999" />
+                    </HorizontalStackLayout>
+
+                    <cards:CoverFlowView x:Name="carouselView" PositionShiftValue="5" BackViewsDepth="3"  
+                        IsVisible="{OnPlatform WinUI=False,Android={Binding IsBusy , Converter={cvt:InverseBooleanConverter}}}"
+                        ItemsSource="{Binding Cards}" IsUserInteractionEnabled="True" >
+                        <x:Arguments>
+                            <proc:CoverFlowProcessor ScaleFactor="0.75" OpacityFactor="0.25"  />
+                        </x:Arguments>
+                        <cards:CoverFlowView.ItemTemplate >
+                            <DataTemplate x:DataType="model:Cards_data">
+                                <ContentView>
+                                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                                      Padding="40,0">
+                                        <Frame  VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        Padding="0" BackgroundColor="Transparent"
+                                        HasShadow="false"
+                                        IsClippedToBounds="true"
+                                        BorderColor="White"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                                        CornerRadius="15">
+
+                                            <Image HorizontalOptions="Center"
+                                            WidthRequest="300" HeightRequest="300"
+                                            Source="{Binding contentBytes}"
+                                            Aspect="AspectFill">
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="Button_Clicked" CommandParameter="{Binding .}" />
+                                                </Image.GestureRecognizers>
+                                            </Image>
+
+                                        </Frame>
+
+                                        <!--<Button Text="{x:Static model:IconFontWeb.MagnifyingGlassPlus}" 
+                            CommandParameter="{Binding .}"
+                            Clicked="Button_Clicked"
+                            HorizontalOptions="End" VerticalOptions="Start" Margin="10"
+                            Grid.Column="0" WidthRequest="50" HeightRequest="50" Padding="0"
+                            Grid.Row="0" BackgroundColor="DarkSlateBlue"
+                            FontFamily="Desktop" FontSize="28" TextColor="White" >
+                            <Button.Clip>
+                                <EllipseGeometry Center="25,25" RadiusX="25" RadiusY="25" />
+                            </Button.Clip>
+                            <Button.Behaviors>
+                                <toolkit:AnimationBehavior EventName="Pressed">
+                                    <toolkit:AnimationBehavior.AnimationType>
+                                        <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.1"/>
+                                    </toolkit:AnimationBehavior.AnimationType>
+                                </toolkit:AnimationBehavior>
+
+                                <toolkit:AnimationBehavior EventName="Released">
+                                    <toolkit:AnimationBehavior.AnimationType>
+                                        <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.0"/>
+                                    </toolkit:AnimationBehavior.AnimationType>
+                                </toolkit:AnimationBehavior>
+                            </Button.Behaviors>
+                        </Button>-->
+
+                                    </Grid>
+                                </ContentView>
+                            </DataTemplate>
+                        </cards:CoverFlowView.ItemTemplate>
+                        <controls:IndicatorsControl />
+                    </cards:CoverFlowView>
+
+                    <ScrollView IsVisible="{OnPlatform Android=false}" Orientation="Horizontal" VerticalOptions="Center" >
+                        <CollectionView ItemsSource="{Binding Cards}" HeightRequest="400" WidthRequest="1000">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:Cards_data">
+                                    <ContentView>
+                                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,Auto"
+                                         Padding="40,0">
+                                            <Frame  VerticalOptions="Center"
+                                                HorizontalOptions="Center"
+                                                Padding="0" BackgroundColor="Transparent"
+                                                HasShadow="false"
+                                                IsClippedToBounds="true"
+                                                BorderColor="White"
+                                                Grid.Column="0"
+                                                Grid.Row="0"
+                                                CornerRadius="15">
+
+                                                <Image HorizontalOptions="Center"
+                                                    WidthRequest="300" HeightRequest="300"
+                                                    Source="{Binding contentBytes}"
+                                                    Aspect="AspectFill">
+                                                    <Image.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="Button_Clicked" CommandParameter="{Binding .}" />
+                                                    </Image.GestureRecognizers>
+                                                </Image>
+
+                                            </Frame>
+                                        </Grid>
+                                    </ContentView>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </VerticalStackLayout>
+                <FlexLayout Grid.Row="1" ZIndex="-1" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Wrap="Wrap" JustifyContent="SpaceEvenly" Padding="0,1000" HeightRequest="400">
+                    <!--  ROTA CRUZADA  -->
+                    <Grid FlexLayout.Basis="50%" HorizontalOptions="FillAndExpand" VerticalOptions="Center" RowDefinitions="Auto" >
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15" >
+                            <RoundRectangle Grid.Row="0" CornerRadius="20" 
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="60"
+                                        HeightRequest="60" >
+                                <RoundRectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0,1" >
+                                        <GradientStop Color="SlateBlue"
+                                            Offset="0.6" />
+                                        <GradientStop Color="SlateBlue"
+                                            Offset="0.1" />
+                                        <GradientStop Color="SlateBlue"
+                                            Offset="0.6" />
+                                    </LinearGradientBrush>
+                                </RoundRectangle.Fill>
+                            </RoundRectangle>
+                            <ImageButton Grid.Row="0" Source="listaprova.png" BackgroundColor="Transparent" BorderColor="Transparent"
+                                         x:Name="rotaxjornada"
+                                WidthRequest="40" HeightRequest="40" >
+                                <ImageButton.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="White" />
+                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                        <toolkit:AnimationBehavior.AnimationType>
+                                            <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.1"/>
+                                        </toolkit:AnimationBehavior.AnimationType>
+                                    </toolkit:AnimationBehavior>
+                                    <toolkit:AnimationBehavior EventName="Released">
+                                        <toolkit:AnimationBehavior.AnimationType>
+                                            <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.0"/>
+                                        </toolkit:AnimationBehavior.AnimationType>
+                                    </toolkit:AnimationBehavior>
+                                </ImageButton.Behaviors>
+                            </ImageButton>
+                            <Label Text="Giro V" FontAttributes="Bold" TextColor="DarkSlateBlue"
+                                   WidthRequest="110" Grid.Row="1"  VerticalTextAlignment="Center" VerticalOptions="Start"
+                                   BackgroundColor="Transparent" LineBreakMode="WordWrap"
+                                   FontSize="16" HorizontalTextAlignment="Center">
+                            </Label>
+
+                        </Grid>
+                    </Grid>
+                    <Grid FlexLayout.Basis="50%" HorizontalOptions="FillAndExpand" Opacity="0.7" VerticalOptions="Center" RowDefinitions="Auto" >
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="15" >
+                            <RoundRectangle Grid.Row="0" CornerRadius="20" 
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="60"
+                                        HeightRequest="60" >
+                                <RoundRectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0,1" >
+                                        <GradientStop Color="MediumSlateBlue"
+                                            Offset="0.6" />
+                                        <GradientStop Color="SlateBlue"
+                                            Offset="0.1" />
+                                        <GradientStop Color="MediumSlateBlue"
+                                            Offset="0.6" />
+                                    </LinearGradientBrush>
+                                </RoundRectangle.Fill>
+                                <!--<RoundRectangle.Shadow>
+                                <Shadow 
+                                    Offset="7,7"
+                                    Radius="0"
+                                    Brush="Black"
+                                    Opacity="0.3">
+                                </Shadow>
+                            </RoundRectangle.Shadow>-->
+                            </RoundRectangle>
+                            <ImageButton Grid.Row="0" Source="logoroxalaranja.png" BackgroundColor="Transparent" BorderColor="Transparent"
+                                WidthRequest="40" HeightRequest="40" >
+                                <ImageButton.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="White" />
+                                    <toolkit:AnimationBehavior EventName="Pressed">
+                                        <toolkit:AnimationBehavior.AnimationType>
+                                            <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.1" />
+                                        </toolkit:AnimationBehavior.AnimationType>
+                                    </toolkit:AnimationBehavior>
+
+                                    <toolkit:AnimationBehavior EventName="Released">
+                                        <toolkit:AnimationBehavior.AnimationType>
+                                            <behaviorPages:SampleScaleToAnimation 
+                                            Easing="{x:Static Easing.Linear}"
+                                            Length="250"
+                                            Scale="1.0"/>
+                                        </toolkit:AnimationBehavior.AnimationType>
+                                    </toolkit:AnimationBehavior>
+                                </ImageButton.Behaviors>
+                            </ImageButton>
+
+                            <Label Text="Controle de Demandas" FontAttributes="Bold" TextColor="DarkSlateBlue"
+                                    WidthRequest="100" Grid.Row="1"  VerticalTextAlignment="Center" VerticalOptions="Start"
+                                    BackgroundColor="Transparent" LineBreakMode="WordWrap"
+                                    FontSize="16" HorizontalTextAlignment="Center">
+                            </Label>
+                        </Grid>
+                    </Grid>
+                </FlexLayout>
+            </Grid>
+        </Grid>
+    </ScrollView>
+    <!--#endregion-->
+    
+</ContentPage>
+

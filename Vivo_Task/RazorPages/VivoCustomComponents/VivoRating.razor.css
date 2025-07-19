@@ -1,0 +1,21 @@
+﻿
+.apply-component ::deep .icon-rating-area {
+    display: inline-flex;
+    justify-content: center;
+    gap: 1px;
+    height:100%;
+    width:100%;
+}
+
+.apply-component ::deep .icon-rating-area .icon-rating {
+    height:100%;
+    max-height:20px;
+}
+
+    .apply-component ::deep .icon-rating-area:not(.disabled):has(.icon-rating:hover) .icon-rating:not(:hover) {
+        opacity: 0.5 !important;
+    }
+
+    .apply-component ::deep .icon-rating-area:not(.disabled):has(.icon-rating:hover) .icon-rating:hover {
+        opacity: 1;
+    }

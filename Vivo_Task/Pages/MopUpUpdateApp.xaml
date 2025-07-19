@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Vivo_Task.Pages"
+             xmlns:icon="clr-namespace:Vivo_Task.Models"
+             x:Class="Vivo_Task.Pages.MopUpUpdateApp"
+             Color="Transparent"
+             CanBeDismissedByTappingOutsideOfPopup="False"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+    <Border  Stroke="#ffffff" BackgroundColor="MediumSlateBlue" StrokeThickness="2" >
+        <Border.StrokeShape >
+            <RoundRectangle CornerRadius="18" />
+        </Border.StrokeShape>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" 
+       Padding="10" WidthRequest="350" HeightRequest="350" >
+            <!--<BoxView CornerRadius="8" WidthRequest="350" HeightRequest="350"  />-->
+            <Grid RowDefinitions="Auto,Auto,Auto,50,50" ColumnDefinitions="*" RowSpacing="10" >
+                <Label VerticalOptions="Center" HorizontalOptions="Center" 
+                   Grid.Row="0" Grid.Column="0" TextColor="White" FontSize="20" 
+                   FontAutoScalingEnabled="True" FontFamily="Vivo-font-bold" FontAttributes="Bold"
+                   Text="APLICATIVO DESATUALIZADO"  HorizontalTextAlignment="Center">
+                </Label>
+                <Border  Background="White" Stroke="White" WidthRequest="100" BackgroundColor="MediumSlateBlue" StrokeThickness="2" Padding="10,10,15,20" 
+                         Grid.Row="1" Grid.Column="0" >
+                    <Border.StrokeShape >
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Image VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="White" 
+                       WidthRequest="100" HeightRequest="75"
+                       Source="warning.png">
+                        <Image.Shadow>
+                            <Shadow Brush="Black" Opacity="0.5" Offset="10,10" />
+                        </Image.Shadow>
+                    </Image>
+                </Border>
+
+                <Label VerticalOptions="Center" HorizontalOptions="Center" 
+                   Grid.Row="2" Grid.Column="0" TextColor="White" FontSize="15" 
+                   FontAutoScalingEnabled="True" FontFamily="Vivo-font-bold" Text="Por favor acesse a play store ou clique abaixo para atualizar o App"  HorizontalTextAlignment="Center">
+                </Label>
+
+                <HorizontalStackLayout Grid.Row="4" Grid.Column="0" HorizontalOptions="Center" 
+                                   VerticalOptions="CenterAndExpand" Spacing="5">
+                    <Button HorizontalOptions="Start" BackgroundColor="White" WidthRequest="120"
+                    TextColor="MediumSlateBlue" FontSize="Medium" FontFamily="Vivo-font-bold"
+                   Text="Atualizar" Clicked="Button_Clicked" >
+                    </Button>
+                    <Button HorizontalOptions="End" BackgroundColor="White" WidthRequest="120"
+                   Grid.Row="2" Grid.Column="0" TextColor="MediumSlateBlue" FontSize="Medium" FontFamily="Vivo-font-bold"
+                   Text="Sair" Clicked="Cancel_Clicked" >
+                    </Button>
+                </HorizontalStackLayout>
+            </Grid>
+        </StackLayout>
+    </Border>
+
+</mopups:Popup>
+
+    
+    

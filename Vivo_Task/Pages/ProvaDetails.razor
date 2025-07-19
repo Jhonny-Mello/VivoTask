@@ -1,0 +1,236 @@
+﻿@layout SinglePageLayout
+@page "/Prova"
+@using Vivo_Task.ModelDTO;
+@using Vivo_Task.Services;
+@using Vivo_Task.Models;
+@using Vivo_Task.Shared_Static_Class.Data;
+@using Vivo_Task.Shared_Static_Class.Converters;
+@using Newtonsoft.Json;
+@inject IFormularioService service;
+
+<br />
+<Blazorise.Div Width="Blazorise.Width.Is100" TextAlignment="Blazorise.TextAlignment.Start" Border="Blazorise.Border.Rounded">
+    <p>
+        <Blazorise.Badge Color="Blazorise.Color.Warning" Style="font-size:13px;color:white">
+            Data: @item.DT_AVALIACAO.ToShortDateString() - Hora: @item.DT_AVALIACAO.ToShortTimeString()
+        </Blazorise.Badge>
+    </p>
+    <p><b>Tipo</b>: @item.TP_FORMS</p>
+    <p><b>Cargo</b>: @item.PUBLICO_CARGO.GetDisplayName()</p>
+    <p><b>Temas</b>: @item.TEMA.Replace(";", ", ")</p>
+    <p><b>Matricula</b>: @item.RE_AVALIADO</p>
+</Blazorise.Div>
+<br />
+
+<BlazorBootstrap.Tabs EnableFadeEffect="true">
+    <Tab IsActive="true">
+        <TitleTemplate>
+            @*<span class="oi oi-book" aria-hidden="true"></span>*@
+            Temas
+        </TitleTemplate>
+        <Content>
+            <Blazorise.Heading Size="Blazorise.HeadingSize.Is5" Margin="Blazorise.Margin.Is1.FromBottom">
+                <div class="nav-item px-3">
+                    <div class="nav-link" @onclick="()=> item.ListaTema = !item.ListaTema">
+                        Acertos por Tema
+                    </div>
+                    @if (item.ListaTema)
+                    {
+                        <ul class="nav flex-column">
+                            @if (questions.Count() == 0)
+                            {
+                                foreach (var tema in item.TEMA.Split(";").ToList().Distinct())
+                                {
+                                    <li class="nav-item px-3">
+                                        <div class="nav-link">
+                                            @tema
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var question in questions.GroupBy(x => new { x.ID_TEMAS, x.PESO }).AsEnumerable())
+                                {
+                                    <li class="nav-item px-3">
+                                        <div class="nav-link">
+                                            <p><b>@question.Key.ID_TEMAS</b></p>
+                                            <p>
+                                                Total de Perguntas: @question.Count()
+                                                <br />
+                                                Acertos: @question.Where(x => x.STATUS_RESPOSTA == true).Count()
+                                                <br />
+                                                Nota total do tema: @(question.Count() * Convert.ToDouble(question.Key.PESO))
+                                                <br />
+                                                Sua nota para este tema: @(question.Where(x => x.STATUS_RESPOSTA == true).Count() * Convert.ToDouble(question.Key.PESO))
+                                            </p>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                </div>
+            </Blazorise.Heading>
+        </Content>
+    </Tab>
+    <Tab Disabled="false" >
+        <TitleTemplate>
+            Sub-Tema
+        </TitleTemplate>
+        <Content>
+        </Content>
+    </Tab>
+    <Tab Title="Gráfico">
+        <Content>
+            <br />
+            @*<Blazorise.Div Width="Blazorise.Width.Is100" Height="Blazorise.Height.Is100" TextAlignment="Blazorise.TextAlignment.Center" Flex="Blazorise.Flex.InlineFlex.JustifyContent.Center.AlignSelf.Center">
+                <Blazorise.Card Width="Blazorise.Width.Is100">*@
+            <Blazorise.CardHeader>
+                Gráfico de Acertos por tema
+
+                @if (questions.Count() == 0)
+                {
+                    <span class="spinner-border spinner-border-sm"></span>
+                }
+
+            </Blazorise.CardHeader>
+            <Blazorise.CardBody>
+                <Chart @ref="barCharTema" Type="Blazorise.Charts.ChartType.Doughnut" TItem="int" Options="lineChartTemaOptions" />
+            </Blazorise.CardBody>
+            @*</Blazorise.Card>
+                </Blazorise.Div>*@
+            <br />
+            <br />
+            <br />
+            <br />
+            @*<Blazorise.Div Width="Blazorise.Width.Is100" Height="Blazorise.Height.Is100" TextAlignment="Blazorise.TextAlignment.Center" Flex="Blazorise.Flex.InlineFlex.JustifyContent.Center.AlignSelf.Center">
+                <Blazorise.Card Width="Blazorise.Width.Is100">*@
+            <Blazorise.CardHeader>
+                Gráfico de Acertos por sub-tema
+
+                @if (questions.Count() == 0)
+                {
+                    <span class="spinner-border spinner-border-sm"></span>
+                }
+
+            </Blazorise.CardHeader>
+            <Blazorise.CardBody>
+                <Chart @ref="barCharSubTema" Type="Blazorise.Charts.ChartType.Doughnut" TItem="int" Options="lineChartSubTemaOptions" />
+            </Blazorise.CardBody>
+            @*</Blazorise.Card>
+                </Blazorise.Div>*@
+        </Content>
+    </Tab>
+</BlazorBootstrap.Tabs>
+
+<Blazorise.PageProgressProvider />
+<NotificationProvider />
+<Blazorise.MessageProvider />
+
+@code {
+    [Parameter]
+    public ListaAvaliacaoModel item { get; set; }
+
+    Chart<int> barCharTema = new();
+    Chart<int> barCharSubTema = new();
+    public List<AVALIACAO_RETORNO_DTO> questions = new();
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    // define specific dataset styles by targeting them with the DatasetIndex
+    public Blazorise.Charts.DoughnutChartOptions lineChartTemaOptions = new()
+    {
+        Responsive = true,
+        Plugins = new Blazorise.Charts.ChartPlugins
+        {
+            Title = new ChartTitle
+            {
+                Text = "Gráfico de Tema",
+                Align = "center",
+                FullSize = true
+            },
+            Tooltips = new ChartTooltips
+            {
+                Intersect = false,
+                DisplayColors = true
+            },
+            Legend = new ChartLegend
+            {
+                Rtl = true,
+                Align = "left",
+                Display = true,
+            }
+        }
+    };
+
+    public Blazorise.Charts.DoughnutChartOptions lineChartSubTemaOptions = new()
+    {
+        Responsive = true,
+        Plugins = new Blazorise.Charts.ChartPlugins
+        {
+            Title = new ChartTitle
+            {
+                Text = "Gráfico de Sub-Tema",
+                Align = "center",
+                FullSize = true
+            },
+            Tooltips = new ChartTooltips
+            {
+                Intersect = false,
+                DisplayColors = true
+            },
+            Legend = new ChartLegend
+            {
+                Rtl = true,
+                Align = "left",
+                Display = true,
+            }
+        }
+    };
+
+    private DoughnutChartDataset<int> GetChartTemaDataset()
+    {
+        return new()
+        {
+            Data = questions.Where(k => k.STATUS_RESPOSTA == true).GroupBy(x => new { x.ID_TEMAS }).Select(x => x.Count()).ToList(),
+            BackgroundColor = backgroundColors,
+            BorderColor = borderColors,
+            BorderWidth = 2,
+        };
+    }
+    private DoughnutChartDataset<int> GetChartSubTemaDataset()
+    {
+        return new()
+        {
+            Data = questions.Where(k => k.STATUS_RESPOSTA == true).GroupBy(x => new { x.ID_SUB_TEMAS }).Select(x => x.Count()).ToList(),
+            BackgroundColor = backgroundColors,
+            BorderColor = borderColors,
+            BorderWidth = 2,
+        };
+    }
+    async Task HandleRedrawTema()
+    {
+        await barCharTema.Clear();
+        await barCharTema.AddLabelsDatasetsAndUpdate(questions.Where(k => k.STATUS_RESPOSTA == true).Select(x => x.ID_TEMAS).Distinct().ToList(), GetChartTemaDataset());
+    }
+
+    async Task HandleRedrawSubTema()
+    {
+        await barCharSubTema.Clear();
+        await barCharSubTema.AddLabelsDatasetsAndUpdate(questions.Where(k => k.STATUS_RESPOSTA == true).Select(x => x.ID_SUB_TEMAS.ToString()).Distinct().ToList(), GetChartSubTemaDataset());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        item.ListaTema = true;
+        var retorno = await service.GetQuestionsByID_PROVA(item.ID_PROVA_RESPONDIDA);
+        if (retorno.IsSuccess)
+        {
+            questions = JsonConvert.DeserializeObject<List<AVALIACAO_RETORNO_DTO>>(retorno.Content.ToString());
+        }
+        await HandleRedrawTema();
+        await HandleRedrawSubTema();
+
+    }
+}

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:Vivo_Task.Models"
+             xmlns:icon="clr-namespace:Vivo_Task.Models"
+             xmlns:pages="clr-namespace:Vivo_Task.Pages"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:converters="clr-namespace:Shared_Static_Class.Converters;assembly=Shared_Static_Class"
+             xmlns:imgconverters="clr-namespace:Vivo_Task.Converters"
+             xmlns:viewModels="clr-namespace:Vivo_Task.ViewModels"
+             xmlns:icons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
+             x:Class="Vivo_Task.Pages.MopUpGenericUserInfo"
+             x:DataType="viewModels:MopUpGenericUserInfoViewModel"
+             Color="Transparent"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+
+    <Border WidthRequest="350" HeightRequest="{OnPlatform Android='700', WinUI='600'}" Stroke="white" BackgroundColor="#48438f" StrokeThickness="2"   >
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="50" />
+        </Border.StrokeShape>
+        <AbsoluteLayout>
+            <ImageButton Source="{icons:FontAwesomeSolid Icon=X, IconColor='#ffffff'}" IsVisible="{OnPlatform Android='True', WinUI='False'}"
+                AbsoluteLayout.LayoutBounds="0.98,0.03"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                Background="Transparent" BorderColor="Transparent"
+                VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="60" 
+                Clicked="ImageButton_Clicked2" >
+            </ImageButton>
+            <Grid WidthRequest="350" HeightRequest="{OnPlatform Android='700', WinUI='600'}" x:Name="front">
+                <!-- Conteúdo principal -->
+                <Grid Grid.Row="1" RowDefinitions="Auto,Auto" 
+                      RowSpacing="{OnPlatform Android='90', WinUI='20'}" 
+                      HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <!-- Imagem com borda arredondada -->
+                    <Border HeightRequest="{OnPlatform Android='230', WinUI='200'}"
+                                WidthRequest="{OnPlatform Android='230', WinUI='200'}"
+                                Grid.Row="0">
+                        <Border.StrokeShape >
+                            <RoundRectangle CornerRadius="{OnPlatform Android='115', WinUI='100'}" />
+                        </Border.StrokeShape>
+                        <Image Aspect="AspectFill" 
+                            SemanticProperties.Description="Foto de Perfil"
+                            Source="{Binding User.UserAvatar, Converter={imgconverters:ImageByteConverterOrDefault}}">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="RotateToBack"  />
+                            </Image.GestureRecognizers>
+                            <Image.Shadow>
+                                <Shadow Brush="Black" Offset="10,10" Opacity="0.1" />
+                            </Image.Shadow>
+                        </Image>
+                    </Border>
+
+                    <!-- Informações do usuário -->
+
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="3" Grid.Row="1" Padding="10">
+                        <VerticalStackLayout Spacing="1" Margin="0,0,10,0">
+                            <Label Text="{Binding User.NOME}" VerticalTextAlignment="Center" FontSize="23" TextColor="White" FontAutoScalingEnabled="True" HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding User.MATRICULA}" FontSize="20" TextColor="White" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=Envelope}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                                BackgroundColor="Transparent"  FontSize="15"
+                                TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.EMAIL}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"   />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=UserGroup}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                                    BackgroundColor="Transparent"  FontSize="15"
+                                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.CARGO, Converter={imgconverters:EnumToDisplayNameConverter}}" FontSize="16" TextColor="White" 
+                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=MapLocationDot}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                                    BackgroundColor="Transparent"  FontSize="15"
+                                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.PDV}" FontSize="16" TextColor="White"
+                                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+
+                        <!--<Label Text="{Binding Canal, Converter={converter:EnumToDisplayNameConverter}}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center"/>-->
+                        <!--<Button x:Name="SaveButton" Text="Salvar"
+                            IsVisible="{Binding ChangeAvatar}"
+                            BackgroundColor="White" 
+                            Clicked="SaveButton_Clicked"
+                            TextColor="MediumSlateBlue"/>-->
+                    </VerticalStackLayout>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="0" WidthRequest="350" HeightRequest="700" x:Name="back" >
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="RotateToBack"  />
+                </Grid.GestureRecognizers>
+                <!-- Conteúdo principal -->
+                <Grid Grid.Row="0" RowDefinitions="Auto,Auto" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+                    <!-- Informações do usuário -->
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="3" Grid.Row="1" Margin="0,90,0,0" Padding="10">
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=Person}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent"  FontSize="15"
+                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.DISPLAY_NOME}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"   />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=Map}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent"  FontSize="15"
+                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.REGIONAL}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"   />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=PersonCircleXmark}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent"  FontSize="15"
+                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.CANAL, Converter={imgconverters:EnumToDisplayNameConverter}}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"   />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=Envelope}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent"  FontSize="15"
+                    TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.EMAIL}" FontSize="16" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"   />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=UserGroup}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                        BackgroundColor="Transparent"  FontSize="15"
+                        TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.CARGO, Converter={imgconverters:EnumToDisplayNameConverter}}" FontSize="16" TextColor="White" 
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Padding="0">
+                            <Button Text="{icons:FontAwesomeSolid Icon=MapPin}" BorderColor="Transparent" WidthRequest="50" HeightRequest="50"
+                        BackgroundColor="Transparent"  FontSize="15"
+                        TextColor="White" >
+                            </Button>
+                            <Label Text="{Binding User.PDV}" FontSize="16" TextColor="White"
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+            </Grid>
+        </AbsoluteLayout>
+    </Border>
+
+
+</mopups:Popup>

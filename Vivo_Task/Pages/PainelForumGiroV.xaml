@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vivo_Task.Pages.PainelForumGiroV"
+             x:DataType="vm:ForumRTCZViewModel"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:Vivo_Task.ViewModels" BackgroundColor="#493e8b"
+             xmlns:pages="clr-namespace:Vivo_Task.RazorPages.Forum_GiroV"
+             >
+    <Shell.TitleView>
+        <Grid RowDefinitions="Auto"
+        ColumnDefinitions="Auto"
+        VerticalOptions="FillAndExpand"
+        HorizontalOptions="FillAndExpand"
+        Background="DarkSlateBlue">
+            <!--<Grid.Background>
+            <LinearGradientBrush EndPoint="1,0">
+                <GradientStop Color="DarkSlateBlue"
+                                Offset="0.1" />
+                <GradientStop Color="MediumSlateBlue"
+                                Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>-->
+            <Label Text="FÓRUM GIRO V" TextColor="white" Margin="10,9" CharacterSpacing="4" HorizontalOptions="Center" VerticalOptions="Center"
+               FontSize="23" FontFamily="Vivo-font-bold" FontAttributes="Bold" >
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+    <ContentPage.ToolbarItems>
+        <!--<ToolbarItem Text="Recarregar" Command="{Binding ReloadData}" IconImageSource="reload.png"/>-->
+        <!--<ToolbarItem Text="Home" Clicked="ToolbarItem_Clicked_1" IconImageSource="arrowundo.png"/>-->
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="DarkSlateBlue" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" >
+        <Grid Padding="10" WidthRequest="300" HeightRequest="450" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="50">
+            <Label BackgroundColor="Transparent" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+            Grid.Row="0" TextColor="White" FontSize="Title" FontFamily="Vivo-font-bold" Text="MENU" >
+            </Label>
+            <Button HorizontalOptions="Center" BackgroundColor="MediumSlateBlue" WidthRequest="260" Clicked="NavigateToForum" 
+            Grid.Row="1" TextColor="White" FontSize="Medium" FontFamily="Vivo-font-bold" Text="Fórum" >
+            </Button>
+            <Button HorizontalOptions="Center" BackgroundColor="MediumSlateBlue" WidthRequest="260" Clicked="NavigateToMinhasPubli"
+            Grid.Row="2" TextColor="White" FontSize="Medium" FontFamily="Vivo-font-bold" Text="Minhas Publicações" >
+            </Button>
+            <Button HorizontalOptions="Center" BackgroundColor="MediumSlateBlue" WidthRequest="260" Clicked="NavigateToPubliAnalista"
+            Grid.Row="3" TextColor="White" FontSize="Medium" FontFamily="Vivo-font-bold" Text="Publicações Pendentes" >
+            </Button>
+        </Grid>
+    </Grid>
+</ContentPage>
